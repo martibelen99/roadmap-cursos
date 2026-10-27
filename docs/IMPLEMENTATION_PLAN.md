@@ -1,6 +1,6 @@
 # Implementation Plan — SaberColectivo
 
-Plan de la Instancia B, no ejecución autorizada. Fecha: 27/10/2026. Requiere aprobación docente explícita del usuario antes de crear aplicación, dependencias o contenedores del proyecto. Q-04–06 aún pueden ajustar unicidad, permisos y gestión de publicados; no se ocultan como tareas resueltas.
+Plan de la Instancia B, no ejecución autorizada. Fecha: 27/10/2026. Requiere aprobación docente explícita del usuario antes de crear aplicación, dependencias o contenedores del proyecto. D-09–D-11 están confirmadas: unicidad conservadora de URL, aprobación propia administrativa y gestión de publicados/retirados, incluidas en tareas y pruebas.
 
 ## 1. MVP — qué es P0
 
@@ -9,7 +9,8 @@ MVP = desde clon limpio, configuración local documentada y `docker compose up -
 - US-001 y US-008: catálogo y detalle públicos, búsqueda, categoría y paginación.
 - US-002 y US-003: registro, login, logout, recuperación completa por correo con rate limiting y hash seguro.
 - US-004, US-005 y US-006: aporte completo, revisión administrativa, rechazo motivado, corrección/reenvío y publicación.
-- US-007: único roadmap privado con alta/baja, orden manual y estados pendiente/en_curso/completado.
+- US-007: único roadmap privado con alta/baja, orden manual y estados pendiente/en_curso/completado; conservar retirados con advertencia.
+- US-009: administrador corrige metadatos, retira con motivo y republica tras verificar solución; sin perder ID/roadmaps ni guardar historial por campo.
 
 No incluye pagos, reseñas, valoraciones, comentarios, chat, IA, certificados propios ni correo distinto de recuperación. Certificados del proveedor sí se describen. Una categoría principal por curso, diez iniciales y sin subcategorías.
 
@@ -62,28 +63,30 @@ Estimaciones orientativas de esfuerzo individual, no fechas ni compromisos del a
 
 | # | Tarea | Hecho cuando… | Estimación |
 |---|---|---|---|
-| 3.1 | Alta, listado propio e historial | CursoInput exige metadatos y sí/no explícitos; alta y evento atómicos; datos ajenos 404; eventos y mis aportes paginados. | 4 h |
-| 3.2 | Decisión administrativa y concurrencia | Rol comprobado, motivo al rechazar, revision/lock evita doble decisión; publicado visible solo tras aprobar; aplicar respuesta Q-05. | 4 h |
-| 3.3 | Corrección y reenvío | Solo autor de rechazado guarda/reenvía; transiciones válidas conservan motivo y snapshots; errores 409/422 no borran datos. | 3 h |
+| 3.1 | Alta, listado propio e historial | CursoInput exige metadatos y sí/no explícitos; alta y evento atómicos; URL única normaliza espacios/fragmentos/tracking según contrato, conserva identificadores; duplicado publicado ofrece ficha y pendiente no revela datos; datos ajenos 404; eventos y mis aportes paginados. | 4 h |
+| 3.2 | Decisión administrativa y concurrencia | Rol comprobado, motivo al rechazar, revision/lock evita doble decisión; publicado visible solo tras aprobar; aprobación propia permitida solo al administrador; autor/revisor/fecha registrados y usuario común recibe 403. | 4 h |
+| 3.3 | Corrección y reenvío | Solo autor de rechazado guarda/reenvía; transiciones válidas conservan motivo y eventos mínimos sin snapshots; errores 409/422 no borran datos. | 3 h |
 | 3.4 | UI de aporte, estado, corrección y revisión | Formularios y cola conectados; administrador verifica enlace y gratuidad manualmente; todas las rutas APPFlow navegables por teclado. | 5 h |
+| 3.5 | API de gestión administrativa | Listado/detalle privado paginado; corregir mantiene ID/estado/relaciones, registra actor/fecha sin historial por campo; retiro exige motivo; republicar exige confirmación y actualiza revisión; locks/UNIQUE evitan conflictos. | 4 h |
+| 3.6 | UI de gestión y disponibilidad | Rutas admin de listado/detalle con filtros, formulario de metadatos, modal de retiro y confirmación de republicación; 403/409/422 recuperables y accesibles. | 3 h |
 
 ### M4 — Roadmap privado
 
 | # | Tarea | Hecho cuando… | Estimación |
 |---|---|---|---|
-| 4.1 | Alta, listado, baja y estados | Solo propietario; un curso una vez; alta publicado al final pendiente; estado persistido; baja no elimina curso y reindexa. | 3 h |
+| 4.1 | Alta, listado, baja y estados | Solo propietario; un curso una vez; alta publicado al final pendiente; retirado no admite alta pero items previos conservan estado/orden/metadatos; retiro concurrente con alta se serializa; baja no elimina curso y reindexa. | 3 h |
 | 4.2 | Movimientos transaccionales | Mover antes de ID o al final funciona entre páginas; dos movimientos concurrentes no duplican posiciones ni pierden ítems; destino ajeno 404. | 3 h |
-| 4.3 | Pantalla roadmap y conexión con detalle | Agregar exige confirmación tras login; ordenar con teclado y cruzar página; quitar con modal; estados empty/loading/error y persistencia tras login. | 4 h |
+| 4.3 | Pantalla roadmap y conexión con detalle | Agregar exige confirmación tras login; ordenar con teclado y cruzar página; quitar con modal; estados empty/loading/error y persistencia tras login; advertencia de retirado sin link público, que desaparece al republicar sin reiniciar progreso. | 4 h |
 
 ### M5 — Validación y entrega del MVP
 
 | # | Tarea | Hecho cuando… | Estimación |
 |---|---|---|---|
-| 5.1 | Pruebas integrales y seguridad | US-001–008 de punta a punta pasan; límites, token usado/vencido, permisos cruzados y conflictos cubiertos; no secretos ni stack traces públicos. | 5 h |
+| 5.1 | Pruebas integrales y seguridad | US-001–009 de punta a punta pasan; duplicados por visibilidad, normalización conservadora, aprobación propia, retiro/republicación, límites, token usado/vencido, permisos cruzados y conflictos cubiertos; no secretos ni stack traces públicos. | 6 h |
 | 5.2 | Accesibilidad, paginación y ejecución limpia | Recorrido teclado y zoom 200%; contraste y 320/360/768/1024px; listas >20 elementos; compose desde clon limpio sin errores consola. | 3 h |
 | 5.3 | Actualizar evidencia y documentación | TRD con versiones reales, matriz RF/US/pruebas, riesgos y pasos reproducibles; usuario revisa antes de push/merge. | 2 h |
 
-Esfuerzo base estimado: **73 h**. Reserva orientativa del 25%: **18.25 h**; total aproximado **91.25 h**. No se impone fecha de entrega inexistente. Si el tiempo disponible no alcanza, priorizar completar requisitos docentes y consultar alcance, sin eliminar autenticación, recuperación ni revisión. Q-06 puede agregar tareas y aumentar estimación.
+Esfuerzo base estimado: **81 h**. Reserva orientativa del 25%: **20.25 h**; total aproximado **101.25 h**. No se impone fecha de entrega inexistente. Si el tiempo disponible no alcanza, priorizar completar requisitos docentes y consultar alcance, sin eliminar autenticación, recuperación ni revisión. La gestión administrativa confirmada suma dos tareas y amplía la integración; el tiempo disponible real deberá compararse con esta estimación antes de B.
 
 ## 4. Ejecución (Instancia B)
 
@@ -105,6 +108,8 @@ Un lote coherente por rama y commits convencionales según TRD §4. Ninguna fila
 | 3.2 | Decisión administrativa y concurrencia | M3 | Pendiente, B no autorizada | feat/aportes / sin commit |
 | 3.3 | Corrección y reenvío | M3 | Pendiente, B no autorizada | feat/aportes / sin commit |
 | 3.4 | UI de aporte, estado, corrección y revisión | M3 | Pendiente, B no autorizada | feat/aportes / sin commit |
+| 3.5 | API de gestión administrativa | M3 | Pendiente, B no autorizada | feat/aportes / sin commit |
+| 3.6 | UI de gestión y disponibilidad | M3 | Pendiente, B no autorizada | feat/aportes / sin commit |
 | 4.1 | Alta, listado, baja y estados | M4 | Pendiente, B no autorizada | feat/roadmap / sin commit |
 | 4.2 | Movimientos transaccionales | M4 | Pendiente, B no autorizada | feat/roadmap / sin commit |
 | 4.3 | Pantalla roadmap y conexión con detalle | M4 | Pendiente, B no autorizada | feat/roadmap / sin commit |
@@ -114,11 +119,11 @@ Un lote coherente por rama y commits convencionales según TRD §4. Ninguna fila
 
 ## 5. Estrategia de testing
 
-- Unitarias de reglas puras: campos condicionales de certificado/aval, transición de aporte, formato y normalización URL, estado y reordenamiento de roadmap; patrón AAA, sin HTTP/BD. Objetivo de diseño ≥85% de cobertura de líneas de reglas puras, no de todo el proyecto; cobertura no sustituye casos relevantes.
-- Integración contra PostgreSQL 18.6 real aislado, no SQLite: constraints, FK, unique diferible, locks, rollback, dos revisores, dos resets y orden concurrentes; limpiar datos entre casos. ORM y migraciones deben probarse con el mismo motor que se entregará.
+- Unitarias de reglas puras: campos condicionales de certificado/aval, transición de aporte, normalización URL idempotente, tracking de lista cerrada, fragmentos de anclaje/ruta y preservación de parámetros desconocidos; retiro/republicación y estado/reordenamiento de roadmap; patrón AAA, sin HTTP/BD. Objetivo de diseño ≥85% de cobertura de líneas de reglas puras, no de todo el proyecto; cobertura no sustituye casos relevantes.
+- Integración contra PostgreSQL 18.6 real aislado, no SQLite: constraints, FK, unique diferible, locks, rollback, dos revisores, dos resets, URL duplicada concurrente con alta/edición, alta de roadmap concurrente con retiro y orden concurrentes; limpiar datos entre casos. ORM y migraciones deben probarse con el mismo motor que se entregará.
 - API: pytest y cliente HTTP de FastAPI; 401/403/404/409/422/429, shape de errors, filtros, totales, páginas vacías y máximos. Dos usuarios y administrador con fixtures independientes. Prueba de rate limiting entre procesos/reinicio. Tiempo controlado para expiración sin esperar 30 min reales.
 - Frontend: Vitest y Testing Library para formularios, hooks de paginación y sesión, campos asociados, reintento y conflictos; verificar comportamiento observable, sin replicar funciones internas.
-- E2E con Playwright: flujos APPFlow 1–5 contra API/BD reales y correo dev capturado; incluir ruta de recuperación y reutilización fallida. No enviar correo real ni usar cursos reales como fixtures.
+- E2E con Playwright: flujos APPFlow 1–6 contra API/BD reales y correo dev capturado; incluir ruta de recuperación y reutilización fallida. Verificar que retirar oculta catálogo sin perder ítems y republicar restaura disponibilidad sin reiniciar progreso; común no ejecuta administración, administrador propio sí valida y deja revisor/fecha. No enviar correo real ni usar cursos reales como fixtures.
 - Manual: revisión de enlace/gratuidad de un aporte; teclado, foco de drawer/modal, 320/360/768/1024px, zoom 200%, reduced motion, contraste y navegación atrás. No afirmar conformidad de accesibilidad solo con pruebas automáticas.
 
 Cada tarea verifica sus criterios antes de integrarse; M5 ejecuta la regresión completa una vez y se repite solo por cambios o fallos. Reportar comandos, resultados y limitaciones en evidencia de B. En A se revisan documentos, enlaces, secciones de plantillas y contratos: no se corren pruebas de una aplicación inexistente.
@@ -127,9 +132,9 @@ Cada tarea verifica sus criterios antes de integrarse; M5 ejecuta la regresión 
 
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
-| Aprobación docente o decisiones operativas pendientes | No habilita B / cambios en contrato | Cerrar auditoría y Q-04–06 antes de implementar. |
+| Aprobación docente pendiente | No habilita B | Confirmación explícita del usuario; D-09–D-11 ya resueltas. |
 | Versiones no resueltas | Scaffold no reproducible | 0.1 antes de crear módulos; registrar evidencia real. |
 | Esfuerzo mayor al disponible | MVP incompleto | Estimaciones explícitas, reserva y lotes verticales; no ampliar con funciones excluidas. |
 | Correo o concurrencia subestimados | Fallos de seguridad | Implementar y probar M1/M3 temprano, antes del pulido final. |
 | Formulario extenso y orden entre páginas | Errores UX | Validación compartida conceptualmente y pruebas observables de reenvío/orden. |
-| Q-06 agrega gestión administrativa | Cambia API, datos y tareas | Actualizar documentos y estimación tras respuesta, no construir por suposición. |
+| Gestión administrativa amplía el esfuerzo | Más validaciones y concurrencia | Dos tareas explícitas, prueba de retiro/alta y conservación de relaciones; no añadir solicitudes de edición ni historial de campos. |

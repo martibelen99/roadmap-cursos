@@ -21,7 +21,7 @@ En doce meses, aspiramos a que una comunidad pueda mantener un catálogo útil y
 
 ### Dentro
 
-Catálogo público con búsqueda, filtro de categoría y paginación; registro, login, logout y recuperación completa de contraseña; aportes con metadatos y declaración de toma; revisión por administrador designado; rechazo motivado y corrección/reenvío por autor; un único roadmap privado por usuario con orden manual y estados pendiente/en curso/completado.
+Catálogo público con búsqueda, filtro de categoría y paginación; registro, login, logout y recuperación completa de contraseña; aportes con metadatos y declaración de toma; revisión por administrador designado; rechazo motivado y corrección/reenvío por autor; detección de duplicados por URL normalizada; corrección, retiro y republicación administrativa conservando roadmaps; un único roadmap privado por usuario con orden manual y estados pendiente/en curso/completado.
 
 ### Fuera (out of scope explícito)
 
@@ -70,10 +70,13 @@ Pendiente obligatorio V-01: registrar versiones exactas resueltas y su compatibi
 | D-03 | Qué significa roadmap | Guardar enlaces / ordenar y avance / múltiples planes | Uno privado, orden manual y tres estados | PRD BR-003 |
 | D-04 | Qué pasa tras rechazo | Definitivo / corregir y reenviar / edita administrador | Motivo obligatorio y reenvío por autor | PRD BR-004 |
 | D-05 | Qué significa gratuito | Todo gratis / contenido gratis con certificado pago / pruebas temporales | Contenido completo gratis, certificado pago opcional, sin pruebas | PRD BR-005 |
-| T-01 | Búsqueda y duplicados | Solo categoría / texto y categoría; URL exacta / normalizada | Texto y categoría; unicidad por URL normalizada | Decisión técnica de diseño, TRD y BackendSchema |
+| T-01 | Implementación de búsqueda y normalización | Motor externo / SQL; reglas amplias / lista conservadora | Texto y categoría; normalización acotada en BackendSchema §1.2 | Diseño técnico de D-09 y RF-003 |
 | D-06–08 | Nombre, categorías y exclusiones | Nombre propuesto / elección propia; categorías amplias / solo tecnología; ampliar / acotar MVP | SaberColectivo; diez categorías amplias, una principal y sin subcategorías; exclusiones confirmadas | PRD §8–10 |
+| D-09 | URL duplicada y cambios de edición | URL única / varias ediciones por URL / revisión manual de duplicados | URL normalizada única; misma URL conserva ID, URL distinta permite otro curso; respuesta según visibilidad | PRD BR-007/008, US-004 |
+| D-10 | Administrador revisa su aporte | Permitir con trazabilidad / exigir otro administrador | Permitido en MVP; en_revision obligatorio y autorización en backend | PRD BR-010, TRD TD-010 |
+| D-11 | Gestión de publicados | Diferir / gestión mínima / nueva revisión por cambio | Editar metadatos, retirar con motivo, republicar tras verificar; sin borrar roadmaps ni historial por campo | PRD BR-011–013, US-009 |
 
-D-01 a D-08 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
+D-01 a D-11 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
 
 ## 9. Historia de la SPEC (autoregistro de cambios)
 
@@ -82,3 +85,4 @@ D-01 a D-08 fueron confirmadas expresamente por el autor el 27/10/2026. Las deci
 | 21/10/2026 | Fecha de entrega indicada por la SPEC original | Dato de la fuente; no acredita fecha real del commit. |
 | 27/10/2026 | Se verificó el commit original 2128507 | Preservar la consigna y trazabilidad. |
 | 27/10/2026 | Refinamiento con D-01 a D-08, restricciones y pendientes | Incorporar SaberColectivo, diez categorías y alcance confirmado, sin inventar respuestas. |
+| 27/10/2026 | Incorporadas D-09 a D-11: duplicados y gestión administrativa | Cerrar decisiones operativas confirmadas por el autor. |

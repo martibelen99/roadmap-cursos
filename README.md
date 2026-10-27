@@ -4,7 +4,7 @@ El conocimiento crece cuando se comparte. Webapp comunitaria para descubrir curs
 
 **Estado:** Instancia A — documentación en revisión. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
 
-SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y revisados por un administrador designado. Cada usuario tiene un roadmap privado con orden manual y estados pendiente, en curso y completado. Se admite certificado opcional pago del proveedor; el contenido completo debe ser gratuito y no una prueba temporal.
+SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y revisados por un administrador designado. Cada usuario tiene un roadmap privado con orden manual y estados pendiente, en curso y completado. Administradores pueden aprobar sus aportes con trazabilidad, corregir metadatos, retirar cursos con motivo y republicarlos tras verificar solución; los roadmaps existentes conservan los cursos retirados con una advertencia. Se admite certificado opcional pago del proveedor; el contenido completo debe ser gratuito y no una prueba temporal.
 
 ## Documentación
 
@@ -23,9 +23,9 @@ Las plantillas de entrada se conservan en [docs/plantillas](docs/plantillas/). S
 
 ## Alcance y categorías
 
-Catálogo, búsqueda y filtro, registro/login/logout, recuperación de contraseña, aportes, revisión y corrección/reenvío, roadmap privado. Diez categorías iniciales, una principal por curso, sin subcategorías; lista completa en PRD §9.
+Catálogo, búsqueda y filtro, registro/login/logout, recuperación de contraseña, aportes sin duplicados por URL normalizada, revisión y corrección/reenvío, gestión administrativa y roadmap privado. Diez categorías iniciales, una principal por curso, sin subcategorías; lista completa en PRD §9.
 
-Fuera del MVP: pagos, reseñas, valoraciones, comentarios, chat, recomendaciones automáticas, certificados propios y correos ajenos a recuperación. Sí se informa si el proveedor ofrece certificado y si este es pago.
+Fuera del MVP: pagos, reseñas, valoraciones, comentarios, chat, recomendaciones automáticas, certificados propios y correos ajenos a recuperación. Sí se informa si el proveedor ofrece certificado y si este es pago. También quedan fuera solicitudes de edición de usuarios e historial completo de valores por campo; la revisión independiente obligatoria se reserva para una evolución futura.
 
 ## Stack y ejecución
 

@@ -1,6 +1,6 @@
 # BackendSchema — SaberColectivo
 
-Contrato diseñado para PostgreSQL 18.6; sin migraciones ni backend creados. Fecha: 27/10/2026. Q-04 (unicidad URL), Q-05 (autor administrador) y Q-06 (gestión de publicados) permanecen propuestas hasta respuesta del autor. El contrato base documenta unicidad por URL y ciclo hasta publicación; no habilita por sí solo decisiones pendientes.
+Contrato diseñado para PostgreSQL 18.6; sin migraciones ni backend creados. Fecha: 27/10/2026. D-09–D-11 confirmadas: URL única normalizada; aprobación propia administrativa trazable; corrección, retiro y republicación sin perder relaciones. El rol administrador concentra la moderación del MVP, sin un rol adicional.
 
 ## 1. Modelo de datos
 
@@ -9,6 +9,9 @@ Contrato diseñado para PostgreSQL 18.6; sin migraciones ni backend creados. Fec
 ```mermaid
 erDiagram
     USUARIOS ||--o{ CURSOS : aporta
+    USUARIOS ||--o{ CURSOS : actualiza
+    USUARIOS o|--o{ CURSOS : revisa
+    USUARIOS o|--o{ CURSOS : retira
     CATEGORIAS ||--o{ CURSOS : clasifica
     USUARIOS ||--o{ ROADMAP_ITEMS : organiza
     CURSOS ||--o{ ROADMAP_ITEMS : incluido
@@ -53,6 +56,12 @@ erDiagram
         timestamptz creado_en
         timestamptz actualizado_en
         timestamptz publicado_en
+        uuid actualizado_por_id FK
+        uuid revisado_por_id FK
+        timestamptz revisado_en
+        uuid retirado_por_id FK
+        timestamptz retirado_en
+        text motivo_retiro
     }
     EVENTOS_APORTE {
         uuid id PK
@@ -62,7 +71,6 @@ erDiagram
         varchar estado_anterior
         varchar estado_nuevo
         text motivo
-        jsonb snapshot
         timestamptz creado_en
     }
     ROADMAP_ITEMS {
@@ -135,7 +143,7 @@ Seed inicial idempotente por slug, diez registros: tecnologia-programacion → T
 | id | uuid | PK | Mismo ID de aporte y curso |
 | autor_id | uuid | FK usuarios, NOT NULL | Inmutable |
 | categoria_id | bigint | FK categorias, NOT NULL | Una principal |
-| url / url_normalizada | varchar(2048) cada una | NOT NULL; normalizada UNIQUE propuesto Q-04 | Original para mostrar, normalizada para conflicto |
+| url / url_normalizada | varchar(2048) cada una | NOT NULL; normalizada UNIQUE en todos los estados | URL limpia para navegar; normalizada para detectar conflictos |
 | titulo | varchar(200) | longitud 1–200 tras trim | Obligatorio |
 | tema | varchar(200) | longitud 1–200 tras trim | Obligatorio |
 | version | varchar(80) | longitud 1–80 tras trim | Si proveedor no informa, autor puede declarar «No informada», nunca inferir |
@@ -146,14 +154,37 @@ Seed inicial idempotente por slug, diez registros: tecnologia-programacion → T
 | tiene_aval | boolean | NOT NULL, sin default | Respuesta explícita |
 | aval_organizacion | varchar(200) | NULL si no aval; no vacío si tiene aval | CHECK relación con tiene_aval |
 | lo_tomo | boolean | NOT NULL, sin default | Declaración del autor, no progreso de roadmap |
-| estado | varchar(20) | CHECK en_revision/rechazado/publicado; default en_revision | No se persisten borradores en MVP |
+| estado | varchar(20) | CHECK en_revision/rechazado/publicado/retirado; default en_revision | No se persisten borradores en MVP |
 | revision | integer | CHECK >0, default 1 | Versión optimista del registro, distinta del campo version del curso |
 | creado_en / actualizado_en | timestamptz | default now() | Actualizar por aplicación |
-| publicado_en | timestamptz | NULL antes de publicar | CHECK publicado implica fecha no nula |
+| publicado_en | timestamptz | NULL antes de publicar | CHECK publicado o retirado implica fecha no nula; primera publicación, no se reinicia al republicar |
+| actualizado_por_id | uuid | FK usuarios, NOT NULL | Último actor de cualquier mutación; actualizado_en registra su fecha |
+| revisado_por_id / revisado_en | uuid / timestamptz | Nullable antes de primera decisión; ambos nulos o ambos presentes | Última decisión de aprobación/rechazo/republicación; puede coincidir con autor |
+| retirado_por_id / retirado_en / motivo_retiro | uuid / timestamptz / text | Nullable hasta primer retiro; estado retirado exige los tres y motivo 1–2000 | Último retiro; conservar tras republicar, sin exponerlo públicamente |
 
-Índices: UNIQUE url_normalizada (pendiente Q-04), (estado, publicado_en DESC, id DESC), (estado,categoria_id,publicado_en DESC,id DESC), (autor_id,creado_en DESC,id DESC), (estado,creado_en,id) para cola. ILIKE parametrizado en título/tema puede hacer scan al inicio; medir antes de agregar trigramas. Check DB de docentes: jsonb_typeof='array' y longitud 1–30; API valida cada elemento.
+Constraints adicionales: publicado/retirado exige revisado_por_id y revisado_en; crear aporte fija actualizado_por_id=autor_id, toda decisión/corrección lo fija al actor autenticado.
 
-URL: HTTP/HTTPS absoluta, host obligatorio, sin usuario/password ni fragmento, máximo 2048. Normalizar esquema/host a minúsculas, quitar puerto por defecto y fragmento, usar / si path vacío; conservar path (incluida barra final no vacía) y query sin reordenar/eliminar parámetros. Quitar fragmento se aplica antes de persistir normalizada; URL de entrada con fragmento se rechaza para no confundir enlaces a contenido. No descargar desde API ni inferir equivalencia entre URLs con tracking o dominios distintos. Duplicado de aporte oculto responde 409 genérico sin ID ni autor.
+Índices: UNIQUE url_normalizada, (estado, publicado_en DESC, id DESC), (estado,categoria_id,publicado_en DESC,id DESC), (autor_id,creado_en DESC,id DESC), (estado,creado_en,id) para cola. ILIKE parametrizado en título/tema puede hacer scan al inicio; medir antes de agregar trigramas. Check DB de docentes: jsonb_typeof='array' y longitud 1–30; API valida cada elemento.
+
+**Normalización de URL (D-09, política conservadora del MVP):**
+
+1. Quitar espacios en extremos. Rechazar controles (CR/LF/tab y otros C0), credenciales embebidas, host vacío o puerto inválido; solo HTTP/HTTPS absoluta, máximo 2048 caracteres tras normalizar. Un parser no sustituye estas validaciones.
+2. Esquema/host en minúsculas, host internacional convertido a IDNA, quitar puerto 80 en HTTP y 443 en HTTPS. No unificar HTTP con HTTPS, www con dominio raíz ni seguir redirecciones. Path vacío pasa a /. Preservar mayúsculas, barra final no vacía y segmentos codificados; espacios literales en path/query se codifican %20, no se borran (no unir «curso uno» con «cursouno»).
+3. Quitar fragmentos de anclaje ordinarios (#temario, #leccion). Conservar fragmentos que comiencen / o ! como rutas de aplicaciones, pues pueden identificar cursos distintos. Esta excepción conservadora evita fusionar cursos que solo se distinguen por una ruta hash; no se promete deduplicación semántica universal.
+4. Retirar solo parámetros de seguimiento de esta lista cerrada, comparando nombres decodificados sin distinguir mayúsculas: utm_source, utm_medium, utm_campaign, utm_term, utm_content, utm_id, gclid, fbclid, msclkid. Preservar el orden, valores, duplicados y codificación de todos los otros segmentos de query; no ordenar, eliminar ni reinterpretar id, curso, course, v, version, edition, lang, ref ni parámetros desconocidos. Usar & como separador; no intentar quitar cualquier clave que contenga «utm». Si no quedan segmentos, omitir ?.
+5. Guardar URL de navegación limpia y url_normalizada con la misma política; la entrada sin limpiar solo permanece en formulario hasta confirmación, no en un historial de versiones. Todas las altas y correcciones usan la misma función idempotente. Cambiar URL/versión/año conserva id y FKs; UNIQUE atómico también protege contra altas y correcciones concurrentes.
+
+Ejemplos de aceptación (URLs ficticias):
+
+| Entrada(s) | Resultado esperado |
+|---|---|
+| ` HTTPS://EXAMPLE.ORG:443/curso?id=7&utm_source=mail#temario ` y `https://example.org/curso?id=7` | Misma clave `https://example.org/curso?id=7`; segundo aporte no crea registro |
+| `https://example.org/curso?id=7` y `https://example.org/curso?id=8` | Claves distintas, ambos permitidos |
+| `https://example.org/curso?ref=7` y `https://example.org/curso?ref=8` | Distintos; ref no se elimina por suposición |
+| `https://example.org/#/curso/7` y `https://example.org/#/curso/8` | Distintos; conservar fragmento de ruta |
+| `https://example.org/curso uno` y `https://example.org/curso%20uno` | Misma clave, sin borrar el espacio del nombre |
+
+Duplicado publicado: 409 `course_already_published` con `error.resource={curso_id,ficha_url:"/catalogo/<id>"}`. Duplicado en_revision: 409 `course_in_review`, mensaje «Ya fue aportado y se encuentra en revisión», sin ID, autor, fechas, metadatos ni historial. En rechazado/retirado: 409 `duplicate_url` genérico, sin revelar estado ni identificadores; la unicidad incluye estos estados para no crear otro registro. Resolver conflicto después de UNIQUE y consultar visibilidad actual; un dato que se retire durante la navegación puede responder luego 404 en su ficha, sin reutilizar una respuesta privada cacheada. Para modificar un curso a URL de otro, mismo 409 y rollback completo.
 
 #### eventos_aporte
 
@@ -161,14 +192,13 @@ URL: HTTP/HTTPS absoluta, host obligatorio, sin usuario/password ni fragmento, m
 |---|---|---|---|
 | id | uuid | PK | Solo append |
 | curso_id / actor_id | uuid | FK cursos / usuarios | Actor de la transición |
-| accion | varchar(20) | CHECK enviado/corregido/reenviado/aprobado/rechazado | Una fila por acción |
+| accion | varchar(20) | CHECK enviado/corregido/reenviado/aprobado/rechazado/actualizado/retirado/republicado | Una fila por acción |
 | estado_anterior | varchar(20) | NULL solo al enviar | Estado previo |
 | estado_nuevo | varchar(20) | NOT NULL | Estado resultante |
-| motivo | text | NULL excepto rechazo, longitud 1–2000 | Obligatorio en rechazo |
-| snapshot | jsonb | objeto NOT NULL | Copia de metadatos y revision; nunca secretos |
+| motivo | text | NULL excepto rechazo/retiro, longitud 1–2000 | Obligatorio en rechazo |
 | creado_en | timestamptz | default now() | Cronología |
 
-Índice (curso_id,creado_en,id). Eventos solo visibles para autor y administrador, paginados. Corrección no cambia estado pero agrega evento; publicación y evento en misma transacción. Último motivo se obtiene del último evento de rechazo, se conserva también tras corregir/reenvío.
+Índice (curso_id,creado_en,id). Eventos solo visibles para autor y administrador, paginados. Guardan acción/actor/fecha/motivo y transición, sin snapshot ni valores anteriores por campo. Corrección no cambia estado pero agrega evento; modificación administrativa, publicación, retiro y republicación actualizan curso y evento en una transacción. Último motivo se obtiene del último evento de rechazo, se conserva también tras corregir/reenvío.
 
 #### roadmap_items
 
@@ -180,7 +210,7 @@ URL: HTTP/HTTPS absoluta, host obligatorio, sin usuario/password ni fragmento, m
 | estado | varchar(20) | CHECK pendiente/en_curso/completado, default pendiente | Independiente de lo_tomo |
 | agregado_en / actualizado_en | timestamptz | default now() | Auditoría básica |
 
-UNIQUE(usuario_id,curso_id). UNIQUE(usuario_id,posicion) DEFERRABLE INITIALLY DEFERRED permite reindexar en transacción. Índice de posición cubre listado. Alta verifica curso publicado y agrega al final; toda alta/baja/movimiento bloquea fila usuario y reindexa desde 1, commit único. Cambio de estado no cambia posición. No hay tabla de progreso compartida ni avance automático según declaración de toma. Q-06 determinará cómo mostrar cursos retirados sin borrar estos items.
+UNIQUE(usuario_id,curso_id). UNIQUE(usuario_id,posicion) DEFERRABLE INITIALLY DEFERRED permite reindexar en transacción. Índice de posición cubre listado. Alta verifica curso publicado y agrega al final; toda alta/baja/movimiento bloquea fila usuario y reindexa desde 1, commit único. Cambio de estado no cambia posición. No hay tabla de progreso compartida ni avance automático según declaración de toma. Retirados conservan sus items y se serializan desde relación directa con el curso (sin filtro de publicado), con advertencia y metadatos actuales. Alta bloquea curso y comprueba publicado, y luego usuario, en ese orden; retiro/edición bloquea curso. Así una incorporación concurrente con retiro se ordena: si alta confirma primero el ítem se conserva; si retiro confirma primero no admite alta. No hay cascada de eliminación.
 
 #### sesiones
 
@@ -226,15 +256,20 @@ stateDiagram-v2
     en_revision --> rechazado : administrador indica motivo
     rechazado --> rechazado : autor guarda correccion
     rechazado --> en_revision : autor reenvia
+    publicado --> publicado : administrador corrige
+    publicado --> retirado : administrador indica motivo
+    retirado --> retirado : administrador corrige
+    retirado --> publicado : administrador verifica y republica
 ```
 
 | Estado | Quién lo ve | Qué puede pasar |
 |---|---|---|
 | en_revision | Autor y administrador | Aprobar/rechazar; autor no edita mientras se revisa |
 | rechazado | Autor y administrador | Autor corrige y reenvía; se conserva motivo/historial |
-| publicado | Público | Incluir en roadmap; corrección/retiro pendiente Q-06 |
+| publicado | Público | Incluir en roadmap; administrador puede corregir sin nueva revisión o retirar con motivo |
+| retirado | Administrador, autor y usuarios que ya lo tienen en su roadmap | Sin ficha pública ni nuevas altas; conservar avance/orden; administrador corrige y republica tras verificar |
 
-No se agregó estado borrador solo porque aparece en un ejemplo de plantilla. El formulario sin enviar es local a la pantalla. Revisión valida revision actual y estado bajo lock: dos administradores no pueden aprobar/rechazar lo mismo concurrentemente. Pendiente Q-05 sobre aprobar aporte propio.
+No se agregó estado borrador solo porque aparece en un ejemplo de plantilla. El formulario sin enviar es local a la pantalla. Revisión valida revision actual y estado bajo lock: dos administradores no pueden aprobar/rechazar lo mismo concurrentemente. Administrador puede aprobar su propio aporte, nunca salta en_revision; backend valida rol y conserva autor_id, revisado_por_id/revisado_en y evento. Revisión independiente obligatoria es evolución futura fuera de MVP. Republicar actualiza revisado_por_id/revisado_en, sin crear aporte o ID nuevo.
 
 ## 3. API REST
 
@@ -243,16 +278,16 @@ Convenciones generales:
 - Prefijo /api/v1. JSON UTF-8, fechas ISO 8601 UTC, UUID string y enteros de categoría. Auth = cookie de sesión; «propio» exige usuario_id/autor_id de sesión, nunca un usuario recibido en body.
 - Todas las mutaciones exigen Origin permitido; autenticadas también X-CSRF-Token. Respuestas privadas y auth con Cache-Control: no-store.
 - Toda colección: page≥1, page_size 1–100 (default 20), respuesta {items,total,page,page_size}. Fuera de rango devuelve 200 items vacíos, no 404. Orden por endpoint; listado más count bajo misma instantánea para coherencia de cada respuesta. Cambios entre peticiones pueden mover elementos: no se promete snapshot entre páginas.
-- Error único de TRD TD-003. 422 para input inválido o campos desconocidos; 409 para estado/revision/duplicado; 401 sin sesión; 403 sin rol/Origin/CSRF; 404 inexistente o recurso ajeno/oculto, evitando enumeración. 500 genérico sin stack. Toda mutación puede fallar por red; UI no supone que no se guardó: relee antes de reintentar cuando corresponda.
+- Error único de TRD TD-003. 422 para input inválido o campos desconocidos; 409 para estado/revision/duplicado; 401 sin sesión; 403 sin rol/Origin/CSRF; 404 inexistente o recurso ajeno/oculto, evitando enumeración. 500 genérico sin stack. Solo en duplicado publicado se agrega error.resource con curso_id/ficha_url públicos; otros errores omiten resource. Toda mutación puede fallar por red; UI no supone que no se guardó: relee antes de reintentar cuando corresponda.
 - Strings trim salvo passwords/tokens. Esquemas rechazan campos extra y límites indicados en §1. El cliente no puede elegir estado de curso, rol, autor, posicion ni revision resultante.
 
 ### Objetos del contrato
 
 **Usuario:** {id,email,nombre,rol}; solo auth lo devuelve. **Categoria:** {id,nombre,slug}. **CursoPublico:** {id,url,titulo,tema,version,anio_edicion,docentes,categoria,tiene_cuestionarios,requiere_examen,extiende_certificado,certificado_pago,tiene_aval,aval_organizacion,estado,publicado_en}. No email ni declaración de toma del autor en respuestas públicas.
 
-**Aporte:** CursoPublico + {autor_id,lo_tomo,revision,creado_en,actualizado_en,ultimo_motivo_rechazo}; publicado_en puede ser null. Sin historial anidado sin límite. **Evento:** {id,accion,actor_id,estado_anterior,estado_nuevo,motivo,snapshot,creado_en}. **RoadmapItem:** {id,curso:CursoPublico,estado,posicion,agregado_en,actualizado_en}.
+**Aporte:** CursoPublico + {autor_id,lo_tomo,revision,creado_en,actualizado_en,actualizado_por_id,revisado_por_id,revisado_en,ultimo_motivo_rechazo}; publicado_en puede ser null. Sin historial anidado sin límite. **Evento:** {id,accion,actor_id,estado_anterior,estado_nuevo,motivo,creado_en}, sin snapshot. **CursoAdmin:** Aporte + {retirado_por_id,retirado_en,motivo_retiro}. **RoadmapItem:** {id,curso,disponible_en_catalogo,estado,posicion,agregado_en,actualizado_en}; curso reutiliza solo los campos de CursoPublico pero en este contexto privado admite estado retirado, sin motivo de retiro ni otros datos internos; disponible_en_catalogo=false dispara advertencia. No filtrar items por disponibilidad pública ni crear snapshots; cambios de metadatos se reflejan conservando ítem y progreso.
 
-**CursoInput:** {url,categoria_id,titulo,tema,version,anio_edicion,docentes,tiene_cuestionarios,requiere_examen,extiende_certificado,certificado_pago,tiene_aval,aval_organizacion,lo_tomo}. Todos presentes; aval_organizacion null si no aval. Si no certificado, certificado_pago=false. Categoría debe existir y estar activa. Ejemplo de un aporte ficticio, no seed ni curso real:
+**CursoMetadatos:** {url,categoria_id,titulo,tema,version,anio_edicion,docentes,tiene_cuestionarios,requiere_examen,extiende_certificado,certificado_pago,tiene_aval,aval_organizacion}. **CursoInput:** CursoMetadatos + {lo_tomo}. Todos presentes; aval_organizacion null si no aval. Si no certificado, certificado_pago=false. Categoría debe existir y estar activa. Ejemplo de un aporte ficticio, no seed ni curso real:
 
 ```json
 {
@@ -305,7 +340,7 @@ Ejemplo de respuesta paginada vacía, consistente con total y página:
 
 | Método | Path | Auth | Request / Query | Respuestas |
 |---|---|---|---|---|
-| POST | /api/v1/aportes | Sesión | CursoInput | 201 Aporte en_revision, Location /api/v1/aportes/{id}; 409 URL duplicada propuesta Q-04; 422 |
+| POST | /api/v1/aportes | Sesión | CursoInput | 201 Aporte en_revision, Location /api/v1/aportes/{id}; 409 duplicado con respuesta según visibilidad; 422 |
 | GET | /api/v1/aportes | Sesión | page,page_size; solo autor actual | 200 Aporte paginado, creado_en DESC,id DESC |
 | GET | /api/v1/aportes/{id} | Propio o admin | — | 200 Aporte; 404 |
 | GET | /api/v1/aportes/{id}/eventos | Propio o admin | page,page_size | 200 Evento paginado, creado_en ASC,id ASC; 404 |
@@ -314,7 +349,7 @@ Ejemplo de respuesta paginada vacía, consistente con total y página:
 | GET | /api/v1/revision/aportes | Admin | page,page_size | 200 Aporte en_revision paginado, creado_en ASC,id ASC; 403 |
 | POST | /api/v1/aportes/{id}/validar | Admin | {aprobado:boolean,motivo:string o null,revision} | 200 Aporte y evento; 403; 404; 409 estado/revision; 422 motivo obligatorio al rechazar |
 
-PUT reemplaza todos los campos editables; autor/estado no se reciben. Aprobar admite motivo null; rechazar requiere 1–2000 caracteres. Cada mutación curso requiere lock y comparación revision; un 409 obliga a releer. Reenvío vuelve a comprobar formulario completo y categoría activa. Pendiente Q-05 define si un administrador puede revisar su propio aporte. Q-06 puede ampliar este contrato con corrección/retiro de publicados, hoy no comprometidos.
+PUT reemplaza todos los campos editables; autor/estado no se reciben. Aprobar admite motivo null; rechazar requiere 1–2000 caracteres. Cada mutación curso requiere lock y comparación revision; un 409 obliga a releer. Reenvío vuelve a comprobar formulario completo y categoría activa. Puede revisar el propio aporte; no aceptar autor/rol/actor desde body. actualizado_por_id se fija a actor autenticado en toda mutación, y revisado_por_id/revisado_en en decisión administrativa. Autor original y declaración lo_tomo no se alteran al corregir metadatos administrativos.
 
 ### 3.4 Roadmap del usuario
 
@@ -336,6 +371,20 @@ Mover con null envía al final; con destino lo coloca antes de ese ítem. La UI 
 
 Aunque haya solo diez al inicio, se pagina para cumplir la restricción de todos los listados. Selector carga siguientes páginas de forma explícita y conserva selección; categoría actual inactiva se muestra desde el objeto Curso/Aporte, pero no se admite como nueva selección.
 
+### 3.6 Gestión administrativa de cursos publicados y retirados
+
+| Método | Path | Auth | Request / Query | Respuestas |
+|---|---|---|---|---|
+| GET | /api/v1/admin/cursos | Admin | page,page_size,estado opcional publicado/retirado,q,categoria_id | 200 CursoAdmin paginado, actualizado_en DESC,id DESC; 403; 422 |
+| GET | /api/v1/admin/cursos/{id} | Admin | — | 200 CursoAdmin solo publicado/retirado; 403; 404 |
+| PUT | /api/v1/admin/cursos/{id} | Admin | CursoMetadatos + {revision} | 200 CursoAdmin con revision incrementada, conserva estado; 403; 404; 409 revision/estado/URL; 422 |
+| POST | /api/v1/admin/cursos/{id}/retirar | Admin | {motivo,revision} | 200 CursoAdmin retirado y revision incrementada; 403; 404; 409 no publicado/revision; 422 motivo vacío o >2000 |
+| POST | /api/v1/admin/cursos/{id}/republicar | Admin | {revision,verificacion_confirmada:true} | 200 CursoAdmin publicado y revision incrementada; 403; 404; 409 no retirado/revision; 422 sin confirmación |
+
+q/categoria_id funcionan como catálogo; sin estado devuelve solo publicados+retirados. GET privado nunca filtra por un autor recibido. PUT reemplaza los metadatos; permite corregir un retirado antes de republicarlo, sin cambiar estado ni declaración de toma del autor. No se crean IDs nuevos ni se modifica roadmap_items. Cambio de URL colisionante revierte toda la operación.
+
+Cada mutación bloquea curso, compara revision, valida rol en backend y escribe evento mínimo/actor/fecha dentro de una transacción. Retiro exige motivo de 1–2000 caracteres; no usa DELETE. Republicación exige administrador que haya comprobado solución, enlace activo, gratuidad y metadatos, confirmación explícita en body; backend verifica confirmación/permisos/estado pero no se presenta como verificador automático de una revisión humana. No vuelve a en_revision ni requiere otro administrador. publicado_en conserva primera publicación; revisado_en representa revisión más reciente. Las consultas públicas aplican estado=publicado tanto en listado como detalle. Roadmap existente muestra disponible_en_catalogo=false, admite avanzar/ordenar/quitar aun retirado, sin enlace de ficha pública. Ni corrección ni retiro eliminan registro o relaciones.
+
 ## 4. Decisiones del esquema
 
 | Decisión | Alternativas | Por qué |
@@ -346,7 +395,7 @@ Aunque haya solo diez al inicio, se pagina para cumplir la restricción de todos
 | Booleanos explícitos | Flags JSONB | Constraints, tipos y formularios verificables. |
 | Docentes JSONB | Tabla de personas compartida | No hay gestión de identidad de docentes; lista acotada de nombres suficiente. |
 | UUID para recursos privados | Serial | Reduce enumeración; nunca sustituye autorización por propietario. |
-| Eventos append-only con snapshot | Sobrescribir último motivo | Conserva correcciones y decisiones, sin listas anidadas ilimitadas. |
+| Eventos mínimos append-only y último actor/fecha en curso | Snapshot por versión / solo sobrescribir fecha | Trazabilidad de acciones y motivos sin historial completo de campos; D-11. |
 | Posición entera y lock | Array completo / posición flotante | Reordenamiento entre páginas y garantía de unicidad. |
 
-Auditoría y requisitos pendientes se consolidan en AUDITORIA_INSTANCIA_A.md. Versiones exactas y Q-04–06 impiden declarar este contrato cerrado mientras sigan sin resolver.
+Auditoría y requisitos pendientes se consolidan en AUDITORIA_INSTANCIA_A.md. D-09–D-11 ya están incorporadas al contrato; queda pendiente verificar versiones reales V-01, no nuevas decisiones de producto.

@@ -29,7 +29,9 @@ V-01 bloquea el cierre formal del requisito «versiones exactas instaladas». No
 | TD-006 | Verificar URL activa | Crawler del servidor / revisión manual | Sintaxis en API; revisión humana en navegador antes de aprobar | Evita un subsistema de scraping y SSRF; el backend nunca descarga URLs aportadas. |
 | TD-007 | Orden de roadmap | Array de IDs / ranking fraccional / posición entera | Posición entera, mover antes de otro ítem o al final bajo lock de usuario | Funciona entre páginas sin descargar todo el roadmap; unicidad diferible. |
 | TD-008 | Rate limiting | Memoria de proceso / Redis / PostgreSQL | Contadores atómicos persistidos en PostgreSQL | Un servicio menos; no se evade cambiando de worker o reiniciando API. |
-| TD-009 | Búsqueda y URL única | Motor externo / SQL; URL cruda / normalizada | ILIKE parametrizado en título/tema; URL normalizada con índice UNIQUE | Suficiente para MVP; sin deduplicación semántica no verificable. |
+| TD-009 | Búsqueda y URL única | Motor externo / SQL; limpieza amplia / conservadora | ILIKE título/tema; normalización de BackendSchema §1.2 y UNIQUE en todos los estados | D-09; lista cerrada de tracking, conservar parámetros identificadores y rutas hash. |
+| TD-010 | Autorización administrativa | Restricción solo UI / verificación backend; revisión independiente / propia | Verificar administrador en cada caso de uso y admitir aprobación propia | D-10; operación individual viable, con autor/revisor/fecha y eventos. |
+| TD-011 | Correcciones, retiro y republicación | Borrado físico / nueva revisión / gestión directa | Metadatos actuales + actor/fecha; estado retirado; eventos mínimos, sin snapshots por campo | D-11; conserva FKs y roadmap, sin sistema de solicitudes de edición. |
 
 ### Seguridad operativa diseñada
 
@@ -124,7 +126,7 @@ En B `docker compose up --build` debe arrancar desde repositorio limpio, aplicar
 {"error":{"code":"validation_error","message":"Revisá los campos indicados","fields":{"titulo":"Campo obligatorio"},"request_id":"identificador-de-traza"}}
 ```
 
-`fields` puede ser vacío; request_id se genera en servidor, sin secretos.
+`fields` puede ser vacío; request_id se genera en servidor, sin secretos. Solo para duplicado ya publicado se agrega `error.resource={curso_id,ficha_url}` con datos públicos; duplicado en revisión responde `course_in_review` sin ID ni autor, y rechazado/retirado recibe `duplicate_url` genérico. Los demás errores no incluyen resource.
 
 | Variable | Ejemplo no secreto | Obligatoria | Uso |
 |---|---|---|---|
@@ -138,7 +140,7 @@ En B `docker compose up --build` debe arrancar desde repositorio limpio, aplicar
 | ADMIN_EMAIL / ADMIN_PASSWORD | solo en .env local | Sí en bootstrap inicial | Seed administrador; hash Argon2id, no registrar password |
 | LOG_LEVEL | INFO | No | Nivel de logging |
 
-Logging estructurado con request_id, método, ruta de plantilla, status, duración y actor interno cuando corresponda. No body de auth, cookies, email, token ni URL con fragmentos. Manejo centralizado traduce excepciones esperadas; rollback antes de responder. Stack trace solo en logs protegidos para errores inesperados. Auditoría de moderación en tabla dedicada, no en logs como única evidencia.
+Logging estructurado con request_id, método, ruta de plantilla, status, duración y actor interno cuando corresponda. No body de auth, cookies, email, token ni URL con fragmentos. Manejo centralizado traduce excepciones esperadas; rollback antes de responder. Stack trace solo en logs protegidos para errores inesperados. Auditoría de moderación y gestión en eventos_aporte (acción, actor, fecha, transición y motivo), sin snapshots completos de metadatos. cursos conserva autor_id, actualizado_por_id/actualizado_en y revisado_por_id/revisado_en; retiro agrega responsable/fecha/motivo. No depender de logs como única evidencia.
 
 ## 5. Requisitos no funcionales técnicos
 
@@ -158,8 +160,10 @@ Logging estructurado con request_id, método, ruta de plantilla, status, duraci�
 |---|---|---|---|
 | Dependencias y versiones sin resolver | Alta | Bloquea instalación reproducible | V-01 y prueba de compatibilidad al habilitar B |
 | Correo no recibido | Media | Usuario sin recuperación | Mailpit dev, errores controlados, reintento por usuario |
-| Enlace cambia después de aprobado | Media | Catálogo desactualizado | No prometer disponibilidad perpetua; revalidación periódica fuera del MVP diseñado |
+| Enlace cambia después de aprobado | Media | Catálogo desactualizado | Administrador corrige o retira/republica; sin crawler ni revalidación automática periódica en MVP |
 | Orden concurrente o revisión doble | Media | Datos inconsistentes | Locks por usuario/curso, versión optimista y constraints |
 | Argon2 satura recursos | Media | Login lento | Limitar intentos antes de hash, medir parámetros en B |
 
 Fuentes consultadas el 27/10/2026: [FastAPI: hashing con Argon2](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/), [OWASP: recuperación](https://cheatsheetseries.owasp.org/cheatsheets/Forgot_Password_Cheat_Sheet.html), [OWASP: sesiones](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html). Las duraciones, umbrales y arquitectura elegidos son decisiones de este proyecto, no cifras impuestas por esas fuentes.
+
+Normalización: usar parser estructurado y validación explícita; [urllib.parse](https://docs.python.org/3/library/urllib.parse.html) no valida por sí solo entradas hostiles. [RFC 3986](https://www.rfc-editor.org/rfc/rfc3986.html) fundamenta separar esquema, autoridad, path, query y fragmento; la lista concreta de tracking y las excepciones conservadoras son política propia de SaberColectivo, no requisitos de la RFC. BackendSchema §1.2 es la fuente única del algoritmo.

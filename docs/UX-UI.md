@@ -156,7 +156,7 @@ Default shadow-sm; hover shadow-md; focus anillo en enlace/acción; seleccionada
 
 ### 4.4 Lista/tabla paginada
 
-Base en lista semántica de cards; desde 768px los listados densos usan tabla con caption y encabezados. Presentación alternativa no duplica controles en el árbol accesible. Paginador muestra página, total, anterior y siguiente, botones ≥44px y aria-current=page. page_size 20 por defecto; cambios de filtro reinician página 1. Antes/después deshabilitados en extremos; página fuera de rango se explica y ofrece volver a primera, sin bucle de redirección. Loading conserva espacio; empty diferencia sin datos de sin coincidencias; error persistente con Reintentar. Cambios anuncian resultado con aria-live polite y foco en título de resultados tras navegación explícita. Reordenar roadmap ofrece subir/bajar o mover antes de otro ítem incluso fuera de la página, nunca solo drag-and-drop.
+Base en lista semántica de cards; desde 768px los listados densos usan tabla con caption y encabezados. Presentación alternativa no duplica controles en el árbol accesible. Paginador muestra página, total, anterior y siguiente, botones ≥44px y aria-current=page. page_size 20 por defecto; cambios de filtro reinician página 1. Antes/después deshabilitados en extremos; página fuera de rango se explica y ofrece volver a primera, sin bucle de redirección. Loading conserva espacio; empty diferencia sin datos de sin coincidencias; error persistente con Reintentar. Cambios anuncian resultado con aria-live polite y foco en título de resultados tras navegación explícita. Reordenar roadmap ofrece subir/bajar o mover antes de otro ítem incluso fuera de la página, nunca solo drag-and-drop. Ítem retirado conserva datos, posición y acciones de avance/quitar, con icono warning y texto «Este curso ya no está disponible en el catálogo comunitario»; no ofrece enlace de ficha pública. La administración usa badges con texto Publicado/Retirado, filtro de estado y las mismas reglas de paginación.
 
 ### 4.5 Menú sándwich
 
@@ -164,7 +164,7 @@ Botón 44px con aria-label «Abrir menú», aria-expanded y aria-controls. Panel
 
 ### 4.6 Modal
 
-Para confirmar quitar un ítem, no para todo el formulario. Dialog con aria-modal, título asociado, surface, radio lg, padding space-5, ancho máximo 480px y margen space-4. Cerrado no accesible; abierto atrapa foco, inicia en Cancelar y vuelve al disparador al cerrar; Escape cancela. Enviando muestra loading, evita doble envío y cierre que oculte resultado incierto. Error dentro del modal permite reintentar; éxito cierra y coloca foco en vecino o título si lista vacía.
+Para confirmar quitar un ítem o retirar/republicar un curso administrado, no para todo el formulario. En retiro incluye label «Motivo del retiro», textarea de 1–2000 caracteres, ayuda y error asociado; no permite confirmar vacío. En republicación incluye verificación explícita de enlace activo, gratuidad y problema solucionado; sin confirmar no envía. Dialog con aria-modal, título asociado, surface, radio lg, padding space-5, ancho máximo 480px y margen space-4. Cerrado no accesible; abierto atrapa foco, inicia en Cancelar y vuelve al disparador al cerrar; Escape cancela. Enviando muestra loading, evita doble envío y cierre que oculte resultado incierto. Error dentro del modal permite reintentar; éxito cierra y coloca foco en vecino o título si lista vacía.
 
 ### 4.7 Toast (notificación)
 
@@ -176,9 +176,9 @@ Skeleton gris disabled, dimensiones de card/detalle; contenedor aria-busy y text
 
 ## 5. Layout y navegación
 
-Header sticky de 64px, surface, capa header; mobile nombre descriptivo + hamburguesa, desktop nombre + Catálogo/Mi roadmap/Mis aportes/Aportar y Revisar solo administrador; acciones Ingresar/Registrarse o Salir. Enlace saltar al contenido como primer control. Contenedor y gutters según §3; formularios máximo 640px, texto legible sin bloques excesivamente anchos.
+Header sticky de 64px, surface, capa header; mobile nombre descriptivo + hamburguesa, desktop nombre + Catálogo/Mi roadmap/Mis aportes/Aportar y Revisar/Gestionar cursos solo administrador; acciones Ingresar/Registrarse o Salir. Enlace saltar al contenido como primer control. Contenedor y gutters según §3; formularios máximo 640px, texto legible sin bloques excesivamente anchos.
 
-Pantallas: inicio orienta hacia catálogo; catálogo y detalle permiten descubrir; registro/login/recuperar/restablecer gestionan acceso; aportar y mis aportes acompañan envío/corrección; roadmap organiza avance; cola y detalle de revisión exclusivos del administrador. Todas las rutas y APIs están en APPFlow. Cada pantalla tiene un h1 y estado de red; formularios muestran resumen de errores enlazado a campos y conservan datos salvo contraseñas/tokens.
+Pantallas: inicio orienta hacia catálogo; catálogo y detalle permiten descubrir; registro/login/recuperar/restablecer gestionan acceso; aportar y mis aportes acompañan envío/corrección; roadmap organiza avance; cola y detalle de revisión y gestión de publicados/retirados exclusivos del administrador. En edición administrativa no hay control de autor/lo_tomo, sí actor/fecha de última actualización y formulario de metadatos. Duplicado publicado ofrece botón «Ver curso»; en revisión solo mensaje, sin ID ni datos ajenos. Todas las rutas y APIs están en APPFlow. Cada pantalla tiene un h1 y estado de red; formularios muestran resumen de errores enlazado a campos y conservan datos salvo contraseñas/tokens.
 
 ## 6. Accesibilidad mínima (no negociable)
 
