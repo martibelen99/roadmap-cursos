@@ -1,24 +1,24 @@
 # Auditoría de coherencia — SaberColectivo — Instancia A
 
-Fecha: 27/10/2026. **Resultado: siete documentos redactados; entrega todavía no cerrada.** No hay implementación, pruebas de aplicación ni aprobación docente registradas. Esta revisión no sustituye las decisiones del autor ni certifica un sistema ejecutable.
+Fecha: 27/10/2026. **Resultado: siete documentos redactados y coherentes con las decisiones confirmadas; entrega preparada para revisión con V-01 pendiente de instalación en B.** No hay implementación, pruebas de aplicación ni aprobación docente registradas. No quedan preguntas de producto abiertas para el alcance acordado; esta revisión no certifica un sistema ejecutable.
 
 ## 1. Alcance de la revisión
 
 Fuentes: SPEC original en commit 2128507, siete plantillas en docs/plantillas, ejemplo UX-UI y README de referencia, decisiones confirmadas por el autor en la conversación. El historial original se conserva. Rama de trabajo: docs/instancia-a; sin merge, push ni reescritura de historial.
 
-Se inspeccionaron secciones numeradas contra cada plantilla, enlaces locales, fences Markdown, identificadores, correspondencia de API, alcance, estados, seguridad y plan. Se calcularon ratios de contraste mediante luminancia relativa sRGB. No se instaló frontend/backend, no se ejecutaron contenedores ni se generaron archivos de aplicación.
+Se inspeccionaron secciones numeradas contra cada plantilla, enlaces locales, fences Markdown, identificadores, correspondencia de API, alcance, estados, seguridad y plan. Se calcularon ratios de contraste mediante luminancia relativa sRGB. Se instaló únicamente pnpm 12.15.0 global en el prefijo NVM, fuera del repositorio, con autorización expresa; se ejecutó pnpm --version. No se instaló frontend/backend, no se ejecutaron contenedores ni se descargaron imágenes o generaron archivos de aplicación.
 
 ## 2. Cumplimiento por plantilla
 
 | Documento | Requisitos revisados | Resultado |
 |---|---|---|
-| SPEC | 9 secciones; problema 2 párrafos; visión; alcance; 5 reglas clave; stack; restricciones; vacíos y origen; historia | Estructura completa. Versiones instaladas incompletas V-01; decisiones Q-04–06 por cerrar. |
-| PRD | 10 secciones; 3 personas (mínimo 2); 8 historias P0 (mínimo 6 historias/4 P0), criterios verificables; RF/RNF/BR; exclusiones y preguntas | Cumple mínimos estructurales y trazabilidad; reglas operativas pendientes explícitas. |
-| TRD | 6 secciones; 9 decisiones (mínimo 3); capas; árbol; servicios; Git; errores; variables; logging; riesgos | Diseño técnico completo para base acordada; versiones reales del proyecto pendientes V-01. |
+| SPEC | 9 secciones; problema 2 párrafos; visión; alcance; 5 reglas clave; stack; restricciones; vacíos y origen; historia | Estructura completa. Host inventariado y objetivos exactos; instalación de dependencias del proyecto pendiente V-01 en B. |
+| PRD | 10 secciones; 3 personas (mínimo 2); 9 historias P0 (mínimo 6 historias/4 P0), criterios verificables; RF/RNF/BR; exclusiones y preguntas | Cumple mínimos estructurales y trazabilidad; reglas D-09–D-11 incorporadas con criterios verificables. |
+| TRD | 6 secciones; 11 decisiones (mínimo 3); capas; árbol; servicios; Git; errores; variables; logging; riesgos | Diseño técnico completo para base acordada; versiones reales del proyecto pendientes V-01. |
 | UX-UI | 7 secciones; 5 principios; tokens y bloque CSS documental; 3 capas responsive; 8 componentes; estados; layout; accesibilidad; assets | Revisión documental realizada. Verificación de UI solo podrá hacerse en B. |
-| APPFlow | 5 secciones; sitemap; 15 rutas/fichas incluyendo fallback; 5 flujos (mínimo 3); estados globales | Contratos base conectados; Q-06 puede agregar ruta y flujo. |
-| BackendSchema | 4 secciones; ER y 8 tablas; constraints/índices; ciclo; auth/catálogo/aportes/roadmap/categorías; decisiones | Contratos y transacciones definidos; Q-04–06 abiertos. |
-| Implementation Plan | 6 secciones; MVP; 6 módulos (mínimo 4); 20 tareas con hecho/estimación; registro; pruebas; riesgos | 73 h base + 25% reserva (91.25 h total); tareas no ejecutadas. Cambiar si Q-06 amplía alcance. |
+| APPFlow | 5 secciones; sitemap; 17 rutas/fichas incluyendo fallback; 6 flujos (mínimo 3); estados globales | Incluye gestión administrativa y advertencia de retirado; contratos conectados. |
+| BackendSchema | 4 secciones; ER y 8 tablas; constraints/índices; ciclo; auth/catálogo/aportes/roadmap/categorías; decisiones | D-09–D-11 cerradas: duplicados, permisos y ciclo de retiro/republicación definidos. |
+| Implementation Plan | 6 secciones; MVP; 6 módulos (mínimo 4); 22 tareas con hecho/estimación; registro; pruebas; riesgos | 81 h base + 25% reserva (101.25 h total); tareas no ejecutadas, gestión administrativa incluida. |
 | README y .gitignore | Índice, estado real, revisión, stack, Git; secretos/salidas locales ignorados | Documentados; sin instrucciones de instalación ficticias ni declaración de entrega realizada. |
 
 Las checklists de accesibilidad y tareas de B están deliberadamente sin marcar: describen verificaciones futuras, no son campos sin completar de una plantilla.
@@ -37,9 +37,9 @@ Las checklists de accesibilidad y tareas de B están deliberadamente sin marcar:
 | Recuperación solicitud → enlace/token → nueva contraseña | US-003 | SMTP, reset_tokens, dos pantallas, consumo transaccional | M1.4 y E2E flujo 5 |
 | Rate limiting al menos login | RNF-004 | TD-008, rate_limit_buckets, 429/Retry-After | M1.3 con concurrencia/reinicio |
 | bcrypt mínimo o más fuerte justificado | RNF-003 | TD-004 Argon2id con parámetros explícitos | M1.1 y pruebas de hash |
-| React/Vite/pnpm, FastAPI/uv, PostgreSQL 18.6, Docker/Compose | SPEC §6 | TRD §1/3 | V-01 y M0; instalado no demostrado |
+| React/Vite/pnpm, FastAPI/uv, PostgreSQL 18.6, Docker/Compose | SPEC §6 | TRD §1/3 | V-01 y M0; herramientas del host confirmadas, dependencias del proyecto pendientes B |
 | Mobile-first/mejora progresiva | RNF-002 | UX-UI §3, base sin media queries | M0.4, M5.2 |
-| Paginación de todos los listados/tablas | RNF-001 | TD-002; cursos, categorías, aportes, cola, eventos, roadmap | API páginas y M5.2 |
+| Paginación de todos los listados/tablas | RNF-001 | TD-002; cursos, categorías, aportes, cola, eventos, roadmap y gestión administrativa | API páginas y M5.2 |
 | Menú sándwich mobile | RNF-002 | UX-UI §4.5; ARIA/foco/cierre | M0.4 y revisión teclado |
 | Screaming Architecture | RNF-006 | TRD §3.2: identidad/catalogo/aportes/roadmap | M0.2 revisión árbol |
 | Inspiración Google con valores concretos | RNF-005 | UX-UI tokens/estados y contraste calculado | M0.4, M5.2 |
@@ -48,30 +48,33 @@ Las checklists de accesibilidad y tareas de B están deliberadamente sin marcar:
 
 - Nombre SaberColectivo e identidad «el conocimiento crece cuando se comparte» propagados a documentos y README.
 - Diez categorías exactas en PRD y BackendSchema, tabla ampliable, una principal por curso, sin subcategorías. Selector y endpoint paginados incluso con diez registros iniciales.
-- Administración designada, sin añadir rol moderador distinto; hereda capacidades de usuario, con política de revisión propia aún consultada.
-- Estados de curso base en_revision/rechazado/publicado iguales en producto, esquema, flujos y plan. No se copió borrador del ejemplo como requisito. Rechazo preserva motivo/eventos; corrección y reenvío son pasos distintos.
+- Administración designada, sin añadir rol moderador distinto; hereda capacidades de usuario, con aprobación propia permitida en MVP, en_revision obligatorio, verificación backend y actor/fecha trazables. Revisión independiente futura excluida del MVP.
+- Estados de curso en_revision/rechazado/publicado/retirado iguales en producto, esquema, flujos y plan. No se copió borrador del ejemplo como requisito. Rechazo preserva motivo/eventos; corrección y reenvío son pasos distintos. Gestión administrativa conserva ID/relaciones, permite retiro motivado y republicación tras verificar, sin volver a en_revision ni guardar historial completo por campo.
 - Roadmap único privado; alta pendiente al final; tres estados; orden con transacciones y movimientos entre páginas, sin exigir cargar todos los IDs.
-- 22 pares método/path definidos en BackendSchema y 22 referencias explícitas distintas en APPFlow. Ninguna referencia de APPFlow sin contrato. /health es operación de infraestructura definida en TRD, no pantalla del producto.
+- 27 pares método/path definidos en BackendSchema y 27 referencias explícitas distintas en APPFlow. Ninguna referencia de APPFlow sin contrato. /health es operación de infraestructura definida en TRD, no pantalla del producto.
 - Recuperación documentada desde solicitud hasta nuevo login y revocación de sesiones; no se limita a una pantalla de solicitud. Se distingue envío SMTP de visualización del token.
 - Azul #1a73e8 contra blanco: 4.51:1; sobre fondo #f8f9fa: 4.27:1. Se corrigió la regla: texto azul primario solo sobre blanco, variante #174ea6 sobre gris. Bordes #747775 superan 3:1 en ambas superficies. Cálculo local, no comprobación manual ficticia en WebAIM.
 - Ejemplos JSON no son datos reales ni evidencia de instalación; fechas del historial de la SPEC no inventan fecha de creación del primer commit.
-- Exclusiones confirmadas no generan tareas del MVP. Gestión de cursos publicados espera Q-06 y no se confunde con comentarios, chat u otras extensiones excluidas.
+- Exclusiones confirmadas no generan tareas del MVP. Gestión de cursos publicados confirmada en D-11 tiene historia US-009, APIs, pantallas y tareas; sin solicitudes de edición ni historial por campo.
+
+- Duplicados: URL normalizada única en todos los estados, índice atómico y normalización común en alta/corrección; tracking de lista cerrada, parámetros identificadores conservados y fragmentos de rutas protegidos. Duplicado publicado ofrece ficha pública; en revisión informa sin datos privados; rechazado/retirado no revela ID/estado.
+- Retirados no aparecen en listado/detalle públicos ni admiten nuevas altas; roadmap existente consulta relación sin filtro de publicado y muestra advertencia con metadatos actuales. Se mantienen estado/posición y se serializa alta concurrente con retiro.
+- Eventos mínimos registran acciones/responsables/fechas/motivos y transiciones, sin snapshots completos de campos. Campos de última revisión, actualización y retiro en curso respaldan la trazabilidad, incluso si autor y administrador son la misma cuenta.
+- Inventario confirmado: Git 2.43.0, Node 22.23.2, pnpm 12.15.0 global, Python 3.12.3, uv 0.12.21, Docker cliente/servidor 29.1.3, Compose 2.40.3+ds1-0ubuntu1~24.04.1; Ubuntu 24.04.2 LTS. pnpm está en el prefijo NVM de Node, sin dependencias del proyecto.
+- Objetivos exactos sin instalar: React 19.3.1, Vite 8.3.5, FastAPI 0.162.0 y PostgreSQL 18.6. Node satisface engines publicados de pnpm/Vite; registros accesibles no equivalen a build o instalación probados. No se cambian objetivos silenciosamente en B.
 
 ## 5. Pendientes antes de cerrar la entrega
 
 | ID | Pendiente | Quién / acción | Impacto |
 |---|---|---|---|
-| Q-04 | Un único registro por URL o permitir varias ediciones | Autor: responder pregunta agrupada; recomendado URL única normalizada | Unicidad, errores y reglas de aporte |
-| Q-05 | Administrador puede aprobar su aporte | Autor: recomendado permitir en MVP individual con auditoría | Permisos y número mínimo de administradores |
-| Q-06 | Corregir/retirar publicados | Autor: recomendada gestión mínima administrativa conservando roadmap | Estado adicional, rutas, endpoints y estimación si se acepta |
-| V-01 | Versiones exactas realmente resueltas e instaladas | Resolver con docente/autor cuándo verificar sin inicializar código/dependencias en A | Requisito obligatorio de SPEC/TRD todavía no cumplido |
+| V-01 | Versiones exactas instaladas del proyecto y compatibilidad integral | Instalar y verificar React/Vite/FastAPI/PostgreSQL en B después de aprobación; fijar locks/digests y resolver librerías auxiliares; cotejar stable de Docker/Compose | Objetivos/host documentados; requisito de instalación de la aplicación aún pendiente, sin atribuir exención al docente |
 | A-01 | Revisión docente | Usuario confirma aprobación cuando ocurra | B permanece sin autorización |
 | G-01 | Publicación de la entrega | Usuario autoriza push/merge cuando revise resultado concreto | No se publica ni fusiona por autorización de edición local |
 
-Q-01, Q-02 y Q-03 están resueltas: nombre, categorías y exclusiones adicionales confirmados. No se vuelven a preguntar.
+Q-01–Q-06 están resueltas: nombre, categorías, exclusiones, duplicados, aprobación propia y gestión administrativa. No se vuelven a preguntar. El usuario autorizó instalar pnpm global y reservar instalaciones del proyecto para B; no hay autorización para iniciar B ni publicar GitHub.
 
 ## 6. Preparación de entrega y límites de evidencia
 
-Después de responder Q-04–06: ajustar SPEC/PRD/contratos/pantallas/plan, repetir auditoría focalizada y actualizar este resultado. V-01 requiere evidencia real; no se soluciona rellenando números de ejemplo. Luego revisar diff contra main y commits convencionales, confirmar ausencia de código/secretos y presentar resultado al usuario antes de pedir autorización final para publicación o merge.
+Decisiones D-09–D-11 propagadas y auditoría focalizada repetida. Documentos listos para revisión con V-01 identificado; el usuario deberá presentar este pendiente al docente si se exige acreditar instalaciones antes de aprobar A. No se afirma cumplimiento total ni exención concedida. V-01 se resuelve con evidencia real durante B autorizada, no con números de ejemplo. Revisar diff contra main y commits convencionales y presentar resultado al usuario antes de cualquier publicación o merge; no se pide autorización para publicar mientras el usuario solo solicitó documentación y preparación local.
 
-Comprobaciones documentales realizadas: secuencia de secciones principales idéntica a las siete plantillas; enlaces locales y fences; IDs únicos (8 US, 8 RF, 8 RNF, 10 BR); endpoints y referencias; git diff --check. Las herramientas de revisión documental no comprueban renderizado Mermaid en GitHub ni comportamiento de una aplicación aún inexistente. No se afirma que la Instancia A esté aprobada o enviada.
+Comprobaciones documentales realizadas: secuencia de secciones principales idéntica a las siete plantillas; enlaces locales y fences; IDs únicos (9 US, 10 RF, 8 RNF, 13 BR); endpoints y referencias; git diff --check. Las herramientas de revisión documental no comprueban renderizado Mermaid en GitHub ni comportamiento de una aplicación aún inexistente. No se afirma que la Instancia A esté aprobada o enviada.
