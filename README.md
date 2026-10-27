@@ -2,7 +2,7 @@
 
 El conocimiento crece cuando se comparte. Webapp comunitaria para descubrir cursos gratuitos y construir un recorrido de aprendizaje personal.
 
-*Estado:* Instancia A — documentación en revisión. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
+*Estado:* Instancia A — documentación preparada para revisión docente, con V-01 identificado. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
 
 SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y revisados por un administrador designado. Cada usuario tiene un roadmap privado con orden manual y estados pendiente, en curso y completado. Administradores pueden aprobar sus aportes con trazabilidad, corregir metadatos, retirar cursos con motivo y republicarlos tras verificar solución; los roadmaps existentes conservan los cursos retirados con una advertencia. Se admite certificado opcional pago del proveedor; el contenido completo debe ser gratuito y no una prueba temporal.
 
@@ -19,7 +19,7 @@ SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y r
 | [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) | Dependencias, tareas, estimaciones y pruebas |
 | [Auditoría](docs/AUDITORIA_INSTANCIA_A.md) | Cumplimiento, trazabilidad y pendientes de entrega |
 
-Las plantillas de entrada se conservan en [docs/plantillas](docs/plantillas/). Son referencias de estructura: sus ejemplos no constituyen requisitos aprobados del producto.
+Las plantillas de entrada son material de referencia y no integran los siete entregables. Se conservan en [docs/plantillas](docs/plantillas/). Son referencias de estructura: sus ejemplos no constituyen requisitos aprobados del producto.
 
 ## Alcance y categorías
 
@@ -45,7 +45,7 @@ Primer commit preservado: 2128507. Documentación en docs/instancia-a; commits c
 
 | Instancia | Estado |
 |---|---|
-| A — Documentación | Redactada, auditada con pendientes explícitos; no entregada todavía |
+| A — Documentación | Preparada y auditada para revisión docente; aprobación pendiente, V-01 registrado |
 | B — MVP | No iniciada; requiere aprobación docente confirmada |
 | C — Evolución/testing avanzado | No iniciada; no se infiere autorización por fechas de plantilla |
 

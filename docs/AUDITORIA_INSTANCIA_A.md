@@ -4,7 +4,7 @@ Fecha: 27/10/2026. **Resultado: siete documentos redactados y coherentes con las
 
 ## 1. Alcance de la revisión
 
-Fuentes: SPEC original en commit 2128507, siete plantillas en docs/plantillas, ejemplo UX-UI y README de referencia, decisiones confirmadas por el autor en la conversación. El historial original se conserva. Rama de trabajo: docs/instancia-a; sin merge, push ni reescritura de historial.
+Fuentes: SPEC original en commit 2128507, siete plantillas en docs/plantillas, ejemplo UX-UI y README de referencia, decisiones confirmadas por el autor en la conversación. El historial original se conserva. Rama de trabajo: docs/instancia-a. El usuario autorizó su publicación y fusión con main después de esta auditoría; se conservará el historial sin reescribirlo.
 
 Se inspeccionaron secciones numeradas contra cada plantilla, enlaces locales, fences Markdown, identificadores, correspondencia de API, alcance, estados, seguridad y plan. Se calcularon ratios de contraste mediante luminancia relativa sRGB. Se instaló únicamente pnpm 12.15.0 global en el prefijo NVM, fuera del repositorio, con autorización expresa; se ejecutó pnpm --version. No se instaló frontend/backend, no se ejecutaron contenedores ni se descargaron imágenes o generaron archivos de aplicación.
 
@@ -69,12 +69,28 @@ Las checklists de accesibilidad y tareas de B están deliberadamente sin marcar:
 |---|---|---|---|
 | V-01 | Versiones exactas instaladas del proyecto y compatibilidad integral | Instalar y verificar React/Vite/FastAPI/PostgreSQL en B después de aprobación; fijar locks/digests y resolver librerías auxiliares; cotejar stable de Docker/Compose | Objetivos/host documentados; requisito de instalación de la aplicación aún pendiente, sin atribuir exención al docente |
 | A-01 | Revisión docente | Usuario confirma aprobación cuando ocurra | B permanece sin autorización |
-| G-01 | Publicación de la entrega | Usuario autoriza push/merge cuando revise resultado concreto | No se publica ni fusiona por autorización de edición local |
+| G-01 | Publicación autorizada por el usuario tras auditoría | Subir rama, abrir PR y fusionar preservando commits; comprobar documentos en main | Autorización registrada; ejecución y verificación remota se informan al terminar |
 
-Q-01–Q-06 están resueltas: nombre, categorías, exclusiones, duplicados, aprobación propia y gestión administrativa. No se vuelven a preguntar. El usuario autorizó instalar pnpm global y reservar instalaciones del proyecto para B; no hay autorización para iniciar B ni publicar GitHub.
+Q-01–Q-06 están resueltas: nombre, categorías, exclusiones, duplicados, aprobación propia y gestión administrativa. No se vuelven a preguntar. El usuario autorizó instalar pnpm global y reservar instalaciones del proyecto para B; la publicación documental y el merge están autorizados tras auditoría, pero no hay autorización para iniciar B.
 
 ## 6. Preparación de entrega y límites de evidencia
 
-Decisiones D-09–D-11 propagadas y auditoría focalizada repetida. Documentos listos para revisión con V-01 identificado; el usuario deberá presentar este pendiente al docente si se exige acreditar instalaciones antes de aprobar A. No se afirma cumplimiento total ni exención concedida. V-01 se resuelve con evidencia real durante B autorizada, no con números de ejemplo. Revisar diff contra main y commits convencionales y presentar resultado al usuario antes de cualquier publicación o merge; no se pide autorización para publicar mientras el usuario solo solicitó documentación y preparación local.
+Decisiones D-09–D-11 propagadas y auditoría focalizada repetida. Documentos listos para revisión con V-01 identificado; el usuario deberá presentar este pendiente al docente si se exige acreditar instalaciones antes de aprobar A. No se afirma cumplimiento total ni exención concedida. V-01 se resuelve con evidencia real durante B autorizada, no con números de ejemplo. Revisar diff contra main y commits convencionales y presentar resultado al usuario antes de cualquier publicación o merge; la autorización de publicación y merge ya está registrada en esta etapa. V-01 es una observación conocida de la entrega para solicitar aprobación, no una instalación realizada ni una exención concedida por el profesor.
 
-Comprobaciones documentales realizadas: secuencia de secciones principales idéntica a las siete plantillas; enlaces locales y fences; IDs únicos (9 US, 10 RF, 8 RNF, 13 BR); endpoints y referencias; git diff --check. Las herramientas de revisión documental no comprueban renderizado Mermaid en GitHub ni comportamiento de una aplicación aún inexistente. No se afirma que la Instancia A esté aprobada o enviada.
+Comprobaciones documentales realizadas: secuencia de secciones principales idéntica a las siete plantillas; enlaces locales y fences; IDs únicos (9 US, 10 RF, 8 RNF, 13 BR); endpoints y referencias; git diff --check. Las herramientas de revisión documental no comprueban renderizado Mermaid en GitHub ni comportamiento de una aplicación aún inexistente. No se afirma que la Instancia A esté aprobada ni que se haya enviado un correo al profesor.
+
+## 7. Auditoría final previa a publicación
+
+| Control | Resultado |
+|---|---|
+| Siete documentos | Secciones obligatorias y coherencia revisadas; sin campos de plantilla pendientes. V-01 explícito corresponde a instalación futura, no a un campo olvidado. |
+| Requisitos y contratos | 9 historias P0, 10 RF, 8 RNF y 13 BR; 27 contratos coinciden con APPFlow; 17 fichas/rutas y 22 tareas (81 h base). |
+| README | SaberColectivo, descripción e índice con enlaces relativos válidos a los siete documentos y auditoría. |
+| Historial | Primer commit raíz 2128507e94984070c4e28eed5ee115507e971050 conservado; sin amend/rebase/force push. Mensajes de commits auditados con Conventional Commits. |
+| Archivos | Solo Markdown y .gitignore; sin código de aplicación, dependencias, lockfiles, entornos, Dockerfiles ni Compose. |
+| Credenciales y datos personales | No se detectaron claves privadas, tokens GitHub/AWS ni credenciales reales en archivos versionados. Email documental es no-reply@example.test, ficticio. Se generalizó ruta local del TRD. El historial conserva nombre/correo de autor Git ya utilizados y publicados desde el primer commit; no se reescriben ni se confunden con credenciales. |
+| Plantillas | Se conservan como fuente de auditoría, claramente diferenciadas de entregables; la consigna no exige que sean exclusivamente locales. Sus campos de ejemplo no se contabilizan como faltantes en documentos finales. Quitarlas hoy tampoco las eliminaría del historial que se preserva. |
+| Observaciones | V-01: instalar/verificar aplicación en B tras aprobación; cotejo de stable y librerías auxiliares en ese momento. A-01: aprobación docente pendiente. No se declara cumplimiento de instalación ni aprobación por el solo hecho de publicar. |
+| Publicación | Autorizada por usuario; flujo PR y merge preservando historial en TRD §4. URL, PR, hash final y comprobación remota se informarán luego de ejecutarlos. |
+
+Huella de la SPEC del primer commit: blob Git `ffb2ccc2a6d3b863e1390013116702ad11887e62`; SHA-256 de sus bytes `ccb9f1fc25317bbfbc9b4c3c2b27b9c8fcfb13cd267f6a631585e07e3528bc11`. La SPEC refinada actual es una evolución posterior, no reemplaza ni altera el objeto original.
