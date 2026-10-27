@@ -73,7 +73,7 @@ Pendiente obligatorio V-01: registrar versiones exactas resueltas y su compatibi
 | T-01 | Búsqueda y duplicados | Solo categoría / texto y categoría; URL exacta / normalizada | Texto y categoría; unicidad por URL normalizada | Decisión técnica de diseño, TRD y BackendSchema |
 | D-06–08 | Nombre, categorías y exclusiones | Nombre propuesto / elección propia; categorías amplias / solo tecnología; ampliar / acotar MVP | SaberColectivo; diez categorías amplias, una principal y sin subcategorías; exclusiones confirmadas | PRD §8–10 |
 
-D-01 a D-05 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
+D-01 a D-08 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
 
 ## 9. Historia de la SPEC (autoregistro de cambios)
 
@@ -81,4 +81,4 @@ D-01 a D-05 fueron confirmadas expresamente por el autor el 27/10/2026. Las deci
 |---|---|---|
 | 21/10/2026 | Fecha de entrega indicada por la SPEC original | Dato de la fuente; no acredita fecha real del commit. |
 | 27/10/2026 | Se verificó el commit original 2128507 | Preservar la consigna y trazabilidad. |
-| 27/10/2026 | Refinamiento con D-01 a D-05, restricciones y pendientes | Convertir la consigna en alcance verificable sin inventar respuestas. |
+| 27/10/2026 | Refinamiento con D-01 a D-08, restricciones y pendientes | Incorporar SaberColectivo, diez categorías y alcance confirmado, sin inventar respuestas. |

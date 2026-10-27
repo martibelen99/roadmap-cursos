@@ -106,7 +106,7 @@ Confirmado: pagos dentro de la app, comentarios, reseñas, valoraciones, chat, r
 
 ## 9. Supuestos y decisiones sobre la SPEC de clase
 
-[Registro de origen en SPEC §8](SPEC.md#8-vacíos-de-la-spec-de-clase-y-decisiones-tomadas). D-01–D-05 son respuestas del autor. Personas, búsqueda, unicidad de URL y permisos mínimos son decisiones de diseño documentadas. La validación de enlace es manual por administrador: no se promete crawler ni validación automática de gratuidad. Las métricas de §2 son objetivos de verificación, no datos observados.
+[Registro de origen en SPEC §8](SPEC.md#8-vacíos-de-la-spec-de-clase-y-decisiones-tomadas). D-01–D-08 son respuestas del autor (identidad, categorías y exclusiones incluidas). Personas, búsqueda, unicidad de URL y permisos mínimos son decisiones de diseño documentadas. La validación de enlace es manual por administrador: no se promete crawler ni validación automática de gratuidad. Las métricas de §2 son objetivos de verificación, no datos observados.
 
 Categorías iniciales confirmadas: Tecnología y Programación; Negocios y Administración; Ciencias y Matemáticas; Idiomas; Arte y Diseño; Humanidades y Ciencias Sociales; Oficios y Formación Técnica; Comunicación y Marketing; Desarrollo Personal y Profesional; Salud y Bienestar. Cada curso tiene una categoría principal. Las categorías son datos ampliables, sin subcategorías en MVP.
 

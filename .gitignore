@@ -1,0 +1,40 @@
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.aws/
+
+# Herramientas locales del agente/editor
+.agents/
+.codex/
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Salidas que podrían aparecer en Instancia B (no se crean en A)
+node_modules/
+dist/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# Datos y volúmenes locales
+.pgdata/
+postgres-data/
+mailpit-data/
+
+# Los lockfiles se versionarán al resolver dependencias en B.

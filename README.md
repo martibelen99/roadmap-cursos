@@ -1,0 +1,52 @@
+# SaberColectivo
+
+El conocimiento crece cuando se comparte. Webapp comunitaria para descubrir cursos gratuitos y construir un recorrido de aprendizaje personal.
+
+**Estado:** Instancia A — documentación en revisión. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
+
+SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y revisados por un administrador designado. Cada usuario tiene un roadmap privado con orden manual y estados pendiente, en curso y completado. Se admite certificado opcional pago del proveedor; el contenido completo debe ser gratuito y no una prueba temporal.
+
+## Documentación
+
+| Documento | Propósito |
+|---|---|
+| [SPEC](docs/SPEC.md) | Consigna refinada, decisiones y origen |
+| [PRD](docs/PRD.md) | Objetivos, reglas, historias y alcance |
+| [TRD](docs/TRD.md) | Arquitectura, seguridad, versiones y flujo Git |
+| [UX-UI](docs/UX-UI.md) | Tokens, componentes y accesibilidad |
+| [APPFlow](docs/APPFlow.md) | Rutas, pantallas y flujos |
+| [BackendSchema](docs/BackendSchema.md) | Entidades, estados y contratos API |
+| [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) | Dependencias, tareas, estimaciones y pruebas |
+| [Auditoría](docs/AUDITORIA_INSTANCIA_A.md) | Cumplimiento, trazabilidad y pendientes de entrega |
+
+Las plantillas de entrada se conservan en [docs/plantillas](docs/plantillas/). Son referencias de estructura: sus ejemplos no constituyen requisitos aprobados del producto.
+
+## Alcance y categorías
+
+Catálogo, búsqueda y filtro, registro/login/logout, recuperación de contraseña, aportes, revisión y corrección/reenvío, roadmap privado. Diez categorías iniciales, una principal por curso, sin subcategorías; lista completa en PRD §9.
+
+Fuera del MVP: pagos, reseñas, valoraciones, comentarios, chat, recomendaciones automáticas, certificados propios y correos ajenos a recuperación. Sí se informa si el proveedor ofrece certificado y si este es pago.
+
+## Stack y ejecución
+
+Stack exigido: React 19 + Vite + pnpm; FastAPI + uv; PostgreSQL 18.6; Docker + Compose. Versiones realmente detectadas y pendientes de resolución en TRD §1. Las instrucciones `docker compose up --build` del plan son criterios para B: no hay Compose ni aplicación hoy. No inicializar dependencias ni implementar antes de confirmación explícita de aprobación docente.
+
+## Cómo revisar
+
+Leer SPEC → PRD → TRD/UX-UI → APPFlow/BackendSchema → Implementation Plan y auditoría. GitHub renderiza Markdown y Mermaid; alternativamente usar preview Markdown del editor. El original del profesor se consulta sin alterar historial:
+
+```bash
+git show 2128507:docs/SPEC.md
+```
+
+## Git y entrega
+
+Primer commit preservado: 2128507. Documentación en docs/instancia-a; commits convencionales por documento o lote coherente. El flujo completo está en TRD §4. No se hace merge ni push sin autorización expresa; no se reescribe historial ni se usa force push. No incluir secretos locales en commits.
+
+| Instancia | Estado |
+|---|---|
+| A — Documentación | Redactada, auditada con pendientes explícitos; no entregada todavía |
+| B — MVP | No iniciada; requiere aprobación docente confirmada |
+| C — Evolución/testing avanzado | No iniciada; no se infiere autorización por fechas de plantilla |
+
+Trabajo práctico individual — Ingeniería en Sistemas de Información, Desarrollo de Software S34, UTN Facultad Regional La Plata. No se declara una licencia de publicación sin decisión del autor.

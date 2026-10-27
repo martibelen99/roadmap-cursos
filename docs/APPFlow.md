@@ -212,7 +212,7 @@ Todas comparten header, enlace saltar al contenido y un h1. Shell consulta `GET 
 1. Visitante completa registro; API crea usuario, nunca administrador, y deriva a login.
 2. Login válido fija cookie y devuelve usuario/CSRF; returnTo debe ser interno.
 3. Credenciales incorrectas muestran mensaje uniforme; 429 bloquea nuevos intentos de UI durante Retry-After, sin confiar en UI como control de seguridad.
-4. Salir hace POST con CSRF, revoca sesión, borra estado en memoria y navega a catálogo. Si ya expiró, limpia estado local igualmente.
+4. Salir hace `POST /api/v1/auth/logout` con CSRF, revoca sesión, borra estado en memoria y navega a catálogo. Si ya expiró, limpia estado local igualmente.
 
 ### Flujo 5 — Recuperación completa (US-003)
 
