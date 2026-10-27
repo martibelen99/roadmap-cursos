@@ -1,52 +1,84 @@
-SPEC — WebApp de Gestión de Comunidad de Cursos
+# SPEC — Comunidad de cursos
 
-    Entregada al alumno el 21/10/2026. Esta SPEC es intencionalmente breve e incompleta: una SPEC de cliente real no llega cerrada. Parte de tu trabajo en el PRD es detectar los vacíos, tomar decisiones y documentarlas.
+Estado: Instancia A, versión refinada del 27/10/2026. Nombre descriptivo provisional; ver Q-01 en PRD §10. La SPEC original permanece intacta en el commit `2128507` (`git show 2128507:docs/SPEC.md`). No se reescribió el historial.
 
-Producto
+## 1. Identidad del producto
 
-Una webapp donde una comunidad de estudiantes construye en conjunto un catálogo de cursos gratuitos y gestiona su aprendizaje con roadmaps personales.
-Funcionalidades principales
+- **Nombre propio:** pendiente de elección del autor (Q-01); «Comunidad de cursos» identifica provisionalmente los documentos.
+- **Una línea:** una comunidad de estudiantes descubre cursos gratuitos validados y organiza su aprendizaje en un roadmap personal privado.
 
-    Roadmap personal: cada usuario crea y gestiona su propio roadmap de cursos.
-    Aporte de cursos: el usuario carga cursos gratuitos de cualquier plataforma o proveedor, indicando su enlace web activo y, como mínimo:
-        categoría / rubro (seleccionado de una lista)
-        tema
-        título
-        versión
-        año de edición
-        docentes o disertantes que lo imparten
-        ¿cuenta con cuestionarios?
-        ¿requiere examen?
-        ¿extiende certificado?
-        ¿lo avala una organización?
-    Declaración de toma: quien aporta un curso declara si él o ella lo tomó o no.
-    Catálogo comunitario: todo curso aportado y validado pasa al catálogo comunitario; desde allí, cualquier usuario puede incluirlo en su catálogo / roadmap personal.
-    Cuenta de usuario y autenticación:
-        registro de usuario;
-        login;
-        recuperación de contraseña (ciclo completo: solicitud → enlace/token → nueva contraseña);
-        protección del login con rate limiting (como mínimo en el endpoint de login);
-        contraseñas cifradas con bcrypt como mínimo (se puede elegir un algoritmo más fuerte si se justifica en el TRD).
+## 2. Problema
 
-Stack tecnológico (fijo)
-Capa 	Tecnología 	Versión
-Frontend 	React + Vite + pnpm 	React 19 (última stable)
-Backend 	FastAPI + uv 	última stable (ref. 21/10/2026: 0.158.2)
-Base de datos 	PostgreSQL 	18.6 (versión actual stable)
-Infra (dev) 	Docker + Compose 	última stable
+Los estudiantes encuentran cursos distribuidos entre múltiples proveedores. Comparar requisitos, edición, docentes y condiciones del certificado demanda revisar páginas con información heterogénea.
 
-    Registrá en tu TRD la versión exacta que resuelvas instalar.
+Guardar enlaces por separado tampoco permite distinguir qué estudiar después, qué está en curso y qué ya se completó. El producto reúne un catálogo construido por la comunidad, con una revisión previa a la publicación, y un recorrido personal ordenable. Estas necesidades son hipótesis de diseño derivadas de la consigna, no resultados de entrevistas.
 
-Indicaciones técnicas (buenas prácticas obligatorias)
+## 3. Visión
 
-    Mobile-first con mejora progresiva (Progressive Enhancement): estilos base sin media queries; a partir de ahí, @media (min-width: ...) únicamente para agregar o mejorar a medida que la pantalla crece (nunca para “arreglar” lo base).
-    Paginación de todas las consultas de listado y de sus tablas en pantalla.
-    Menú sándwich en mobile.
-    Screaming Architecture: la estructura de carpetas debe comunicar el dominio del negocio, no el framework que usás.
-    Apariencia y experiencia inspiradas en Google: estética limpia tipo Material — mucho espacio en blanco, jerarquía tipográfica clara, azul primario de Google, sombras sutiles, bordes redondeados, componentes con estados definidos. La guía visual completa (UX-UI) debe reflejar esa inspiración con valores concretos, no con adjetivos.
+En doce meses, aspiramos a que una comunidad pueda mantener un catálogo útil y revisado de cursos de distintos proveedores y gestionar recorridos personales sin depender de una plataforma educativa única. Esta visión no compromete funciones adicionales al MVP.
 
-Fuera de esta SPEC (lo definís vos en la documentación del TP)
+## 4. Alcance
 
-Autenticación y roles · modelo de datos · API · diseño visual · flujos de navegación · plan de tareas · estrategia de testing.
+### Dentro
 
-Especificar es tomar decisiones con criterio y dejarlas escritas, no esperar a que alguien las tome por vos.
+Catálogo público con búsqueda, filtro de categoría y paginación; registro, login, logout y recuperación completa de contraseña; aportes con metadatos y declaración de toma; revisión por administrador designado; rechazo motivado y corrección/reenvío por autor; un único roadmap privado por usuario con orden manual y estados pendiente/en curso/completado.
+
+### Fuera (out of scope explícito)
+
+No se admite contenido completo pago ni pruebas gratuitas temporales (decisión confirmada). La lista adicional propuesta —pagos dentro de la app, reseñas, comentarios, chat, recomendaciones automáticas, emisión de certificados y correos ajenos a recuperación— espera confirmación en Q-03 del PRD. No se implementa ninguna de esas extensiones mientras esté pendiente. La Instancia A no incluye código de aplicación ni inicialización de dependencias.
+
+## 5. Reglas de producto clave
+
+| ID | Regla | Origen |
+|---|---|---|
+| BR-001 | Solo los aportes aprobados por un administrador se publican. | SPEC original + decisión del autor D-01 |
+| BR-002 | El autor declara explícitamente si tomó el curso. | SPEC original |
+| BR-003 | Cada usuario tiene un único roadmap privado, ordenable y con estados de avance. | D-03 |
+| BR-004 | Todo rechazo tiene motivo y admite corrección y reenvío del autor. | D-04 |
+| BR-005 | Contenido completo gratuito; certificado opcional pago permitido; pruebas temporales excluidas. | D-05 |
+
+Reglas completas: [PRD §7](PRD.md#7-reglas-de-negocio).
+
+## 6. Stack registrado (versiones exactas con las que se va a desarrollar)
+
+| Capa | Tecnología | Versión y evidencia |
+|---|---|---|
+| Frontend | React + Vite + pnpm | React 19 exigido; versiones exactas del proyecto pendientes de instalación autorizada en Instancia B. No hay frontend. |
+| Backend | FastAPI + uv | FastAPI stable exigido (referencia de consigna: 0.158.2). Sin backend instalado; uv detectado, ejecución bloqueada por confinamiento de Snap. |
+| Base de datos | PostgreSQL | 18.6 fijada por consigna; no se ha creado ni verificado un contenedor del proyecto. |
+| Infra dev | Docker + Compose | Herramientas del host registradas en TRD §1; no equivalen a un entorno del proyecto validado. |
+
+Pendiente obligatorio V-01: registrar versiones exactas resueltas y su compatibilidad antes de cerrar la entrega; no instalar durante esta instancia sin resolver la contradicción con la prohibición de inicializar la aplicación.
+
+## 7. Restricciones técnicas heredadas de la SPEC de clase
+
+| Restricción | Cumplimiento diseñado |
+|---|---|
+| Mobile-first con mejora progresiva | Base de una columna sin media queries; mejoras solo con min-width. UX-UI §3. |
+| Todos los listados y tablas paginados | page/page_size, total y orden determinista; incluye categorías y moderación. TRD TD-002. |
+| Menú sándwich mobile | Panel con foco gestionado y controles ARIA. UX-UI §4.5. |
+| Screaming Architecture | Dominios identidad, catálogo, aportes y roadmap. TRD §3.2. |
+| Estética Google/Material | Colores, tipografía, espaciado, sombras, radios y estados concretos. UX-UI §2–4. |
+| Autenticación segura | Recuperación completa, rate limiting de login y hash Argon2id justificado en TRD. |
+
+## 8. Vacíos de la SPEC de clase y decisiones tomadas
+
+| ID | Vacío | Alternativas consideradas | Decisión | Desarrollo |
+|---|---|---|---|---|
+| D-01 | Quién valida | Administrador / comunidad / automático | Administrador designado | PRD BR-001 |
+| D-02 | Visibilidad del catálogo | Público / requiere cuenta | Público | PRD US-001 |
+| D-03 | Qué significa roadmap | Guardar enlaces / ordenar y avance / múltiples planes | Uno privado, orden manual y tres estados | PRD BR-003 |
+| D-04 | Qué pasa tras rechazo | Definitivo / corregir y reenviar / edita administrador | Motivo obligatorio y reenvío por autor | PRD BR-004 |
+| D-05 | Qué significa gratuito | Todo gratis / contenido gratis con certificado pago / pruebas temporales | Contenido completo gratis, certificado pago opcional, sin pruebas | PRD BR-005 |
+| T-01 | Búsqueda y duplicados | Solo categoría / texto y categoría; URL exacta / normalizada | Texto y categoría; unicidad por URL normalizada | Decisión técnica de diseño, TRD y BackendSchema |
+| Q-01–03 | Nombre, categorías iniciales y exclusiones adicionales | Opciones enviadas al autor | Pendientes, no aprobadas por silencio | PRD §10 |
+
+D-01 a D-05 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
+
+## 9. Historia de la SPEC (autoregistro de cambios)
+
+| Fecha | Cambio | Por qué |
+|---|---|---|
+| 21/10/2026 | Fecha de entrega indicada por la SPEC original | Dato de la fuente; no acredita fecha real del commit. |
+| 27/10/2026 | Se verificó el commit original 2128507 | Preservar la consigna y trazabilidad. |
+| 27/10/2026 | Refinamiento con D-01 a D-05, restricciones y pendientes | Convertir la consigna en alcance verificable sin inventar respuestas. |
