@@ -38,7 +38,7 @@ Estimaciones orientativas de esfuerzo individual, no fechas ni compromisos del a
 
 | # | Tarea | Hecho cuando… | Estimación |
 |---|---|---|---|
-| 0.1 | Resolver y fijar versiones compatibles | Inventario exacto de TRD/SPEC con evidencia; smoke test de React 19, FastAPI y PostgreSQL 18.6, sin tags flotantes. | 2 h |
+| 0.1 | Verificar e instalar versiones objetivo aprobadas | Partir de objetivos TRD: React 19.3.1, Vite 8.3.5, FastAPI 0.162.0 y PostgreSQL 18.6; pnpm global 12.15.0 ya confirmado. Registrar instalaciones reales, locks/digests y pruebas; cualquier cambio de objetivo se justifica. | 2 h |
 | 0.2 | Crear estructura de dominios y Compose | Árbol de TRD existe; compose up --build en entorno limpio levanta frontend, backend, postgres y Mailpit; health 200 al conectar BD. | 4 h |
 | 0.3 | Migraciones y seeds idempotentes | Constraints de BackendSchema aplican en Postgres real; diez categorías por slug sin duplicados; administrador desde secreto local, nunca rol elegible en registro. | 4 h |
 | 0.4 | Shell, tokens y cliente HTTP | Navegación 360/768/1024px, drawer y foco funcionan; envelope único, cookies y CSRF integrados; sin errores de consola. | 4 h |
@@ -94,7 +94,7 @@ Un lote coherente por rama y commits convencionales según TRD §4. Ninguna fila
 
 | # | Tarea | Módulo | Estado | Rama prevista / Commit |
 |---|---|---|---|---|
-| 0.1 | Resolver y fijar versiones compatibles | M0 | Pendiente, B no autorizada | chore/infraestructura / sin commit |
+| 0.1 | Verificar e instalar versiones objetivo aprobadas | M0 | Pendiente, B no autorizada | chore/infraestructura / sin commit |
 | 0.2 | Crear estructura de dominios y Compose | M0 | Pendiente, B no autorizada | chore/infraestructura / sin commit |
 | 0.3 | Migraciones y seeds idempotentes | M0 | Pendiente, B no autorizada | chore/infraestructura / sin commit |
 | 0.4 | Shell, tokens y cliente HTTP | M0 | Pendiente, B no autorizada | chore/infraestructura / sin commit |
@@ -133,7 +133,7 @@ Cada tarea verifica sus criterios antes de integrarse; M5 ejecuta la regresión 
 | Riesgo | Impacto | Mitigación |
 |---|---|---|
 | Aprobación docente pendiente | No habilita B | Confirmación explícita del usuario; D-09–D-11 ya resueltas. |
-| Versiones no resueltas | Scaffold no reproducible | 0.1 antes de crear módulos; registrar evidencia real. |
+| Versiones del proyecto no instaladas | Objetivos con compatibilidad integral aún no probada | 0.1 verifica objetivos y fija resolución exacta; registrar evidencia real. |
 | Esfuerzo mayor al disponible | MVP incompleto | Estimaciones explícitas, reserva y lotes verticales; no ampliar con funciones excluidas. |
 | Correo o concurrencia subestimados | Fallos de seguridad | Implementar y probar M1/M3 temprano, antes del pulido final. |
 | Formulario extenso y orden entre páginas | Errores UX | Validación compartida conceptualmente y pruebas observables de reenvío/orden. |

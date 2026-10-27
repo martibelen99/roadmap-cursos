@@ -4,18 +4,34 @@ Diseño para Instancia B. No se ha instalado ni generado la aplicación. Fecha: 
 
 ## 1. Stack y versiones exactas
 
-| Capa | Elección | Versión / evidencia | Por qué |
-|---|---|---|---|
-| Frontend | React + Vite + pnpm | React 19 requerido; parches de React y versiones Vite/pnpm no resueltos, sin package.json ni instalación | Stack docente. |
-| Backend | FastAPI + uv | FastAPI stable requerido; 0.158.2 es referencia de la SPEC, no instalación verificada. uv encontrado en /snap/bin/uv, su ejecución falló por confinamiento Snap. | Stack docente. |
-| ORM / migraciones / driver | SQLAlchemy + Alembic + psycopg | Versiones exactas pendientes de resolución compatible en B | SQL explícito para locks/transacciones; migraciones revisables. |
-| BD | PostgreSQL | 18.6 exigido; sin contenedor ni servidor del proyecto verificado | Stack docente. |
-| Infra dev | Docker + Compose | Host: Docker 29.1.3, build 29.1.3-0ubuntu3~24.04.2; Compose 2.40.3+ds1-0ubuntu1~24.04.1 | Salidas reales del 27/10/2026. |
-| Runtime host | Node / Python | Node v22.23.2; Python 3.12.3 | Inventario; no garantiza compatibilidad con paquetes futuros. |
-| Seguridad | pwdlib con Argon2id | Versión de librería pendiente; parámetros TD-004 | Hash más fuerte permitido por SPEC. |
-| Correo dev | Capturador SMTP local Mailpit | Versión de imagen pendiente | Demostrar recuperación completa sin enviar correo real durante desarrollo. |
+Verificación del entorno el 27/10/2026: Ubuntu 24.04.2 LTS (Noble Numbat), Linux x86_64. Herramientas del host y dependencias del proyecto se registran por separado. Solo pnpm fue instalado en esta preparación; no se inicializó la aplicación.
 
-V-01 bloquea el cierre formal del requisito «versiones exactas instaladas». No se presentan ejemplos ni versiones del host como dependencias instaladas del proyecto. Antes de B, resolver versiones stable compatibles, fijar tags/digests e inventario y registrar comandos/evidencia. Si el docente exige instalaciones ya en A, consultar cómo cumplirlo sin violar la prohibición actual de inicializar dependencias. No se propone una imagen latest flotante como entrega reproducible.
+| Tecnología | Requisito docente | Versión instalada / evidencia local | Versión objetivo | Estado y acción pendiente |
+|---|---|---|---|---|
+| Git | Sin versión exacta fijada | 2.43.0, git --version | Mantener 2.43.0 | Confirmada; historial original preservado |
+| Node.js | Runtime para frontend, sin versión exacta fijada | 22.23.2, node --version, NVM | 22.23.2 | Confirmada; satisface engines declarados por pnpm y Vite elegidos |
+| npm | Auxiliar, no gestor del proyecto | 10.9.8, npm --version | Mantener para herramientas globales | Usado solo para instalar pnpm global, no dependencias del proyecto |
+| pnpm | Obligatorio | **12.15.0**, pnpm --version y npm list --global pnpm --depth=0 | **12.15.0** | Instalado globalmente y ejecutado; npm engines node >=18, Node actual compatible |
+| Python | Runtime backend, sin versión exacta fijada | 3.12.3, python3 --version | 3.12.3 | Confirmada; FastAPI objetivo declara Python >=3.10; dependencias completas por probar en B |
+| uv | Obligatorio | **0.12.21** (7af826859, 2026-09-29), uv --version | 0.12.21 | Confirmada al repetir fuera del sandbox; el bloqueo inicial de Snap no era ausencia de instalación |
+| Docker | Stable, entorno dev | **29.1.3**, cliente y servidor; build 29.1.3-0ubuntu3~24.04.2 del cliente | Host actual como base, sujeto a cotejo de stable en B | Ambos respondieron; sin contenedores creados ni imágenes descargadas |
+| Compose | Stable, entorno dev | **2.40.3+ds1-0ubuntu1~24.04.1**, docker compose version | Host actual como base, sujeto a cotejo de stable en B | Plugin consultado; no se ejecutó compose up |
+| React | React 19 stable | Sin instalación del proyecto; npm confirmó 19.3.1 disponible | **19.3.1** | Instalar React y resolver react-dom/plugin compatibles, probar en B tras aprobación |
+| Vite | Obligatorio | Sin instalación; npm latest confirmó 8.3.5 | **8.3.5** | engines ^20.19.0 o >=22.12.0: Node 22.23.2 compatible por requisito declarado; build real pendiente B |
+| FastAPI | Última stable; 0.158.2 es referencia de consigna | No instalado en Python consultado; PyPI confirmó stable 0.162.0 y disponibilidad de 0.158.2 | **0.162.0** | Instalar/verificar en B; no confundir referencia docente con versión instalada |
+| PostgreSQL | **18.6** | Sin instancia del proyecto; registro oficial confirmó tag 18.6 para linux/amd64 | **18.6** | Descargar imagen y consultar SELECT version() en B; no se ejecutó ahora |
+| ORM / migraciones / driver | Elección técnica: SQLAlchemy + Alembic + psycopg | Sin instalación del proyecto | Resolver versiones exactas compatibles durante B | Fijar en lockfile y probar migraciones/transacciones |
+| Hash | Elección técnica: pwdlib con Argon2id | Sin instalación del proyecto | Parámetros TD-004; librería por resolver en B | Instalar y calibrar durante B |
+| Correo dev | Elección técnica: Mailpit | Sin contenedor del proyecto | Tag/digest por resolver en B | Capturador SMTP de recuperación; sin descarga actual |
+
+### Evidencia y reproducibilidad
+
+- pnpm se instaló mediante `npm install --global pnpm@12.15.0 --no-audit --no-fund --fetch-retries=0 --fetch-timeout=20000`, ejecutado desde /tmp. Binario: `/home/admi/.nvm/versions/node/v22.23.2/bin/pnpm`; paquete global bajo el mismo prefijo NVM. Se eligió versión exacta para evitar una instalación flotante con latest. Cambiar de versión activa de Node en NVM puede requerir volver a habilitar/instalar la herramienta global en ese prefijo.
+- `pnpm --version` devolvió **12.15.0**. No se crearon package.json, pyproject.toml, lockfiles, node_modules ni entornos virtuales en el repositorio. La autorización fue para la herramienta global y documentación, no para Instancia B.
+- `npm view pnpm@latest version engines --json` devolvió 12.15.0 / node >=18; `npm view vite@latest version engines --json` devolvió 8.3.5 / ^20.19.0 || >=22.12.0. Consultas de metadatos: no se ejecutaron Vite ni create-vite. [Instalación oficial pnpm](https://pnpm.io/installation) y [requisitos de Vite](https://vite.dev/guide/) respaldan la compatibilidad declarada; no equivalen a una integración frontend probada.
+- React y FastAPI se consultaron en [npm](https://registry.npmjs.org/react) y [PyPI](https://pypi.org/pypi/fastapi/json). PostgreSQL se comprobó mediante el manifiesto remoto de library/postgres:18.6, linux/amd64; digest observado `sha256:edb0c08dc33befd0262ab3b5cf1c4f3f8cfd8b09e88c05b45adee29d6761ddb6`. No hubo pull ni arranque. Versiones objetivo son una selección a la fecha: no se actualizarán silenciosamente al comenzar B; si cambian, registrar motivo y versiones resueltas.
+
+**V-01, pendiente de ejecución en B:** React, Vite, FastAPI y PostgreSQL se instalarán y verificarán solo después de aprobación docente confirmada por el usuario. Registrar versiones efectivamente resueltas, locks, tags/digests y pruebas de compatibilidad/build/BD en ese momento. Hoy están confirmadas herramientas del host y disponibilidad de objetivos; el requisito de «versiones exactas instaladas» de la aplicación no se declara cumplido. Tampoco se certifica que Docker/Compose del host sean las últimas stable: cotejar antes de B y documentar cualquier diferencia, sin actualizar el host por esta autorización. Se mantiene el stack docente y la prohibición de inicializar aplicación durante A.
 
 ## 2. Decisiones técnicas (mínimo 3)
 
@@ -101,8 +117,8 @@ Son rutas de diseño, no archivos creados en A.
 | Servicio | Imagen/base prevista | Puerto host → contenedor | Rol |
 |---|---|---|---|
 | postgres | postgres:18.6 (digest pendiente V-01) | 5432 → 5432 solo localhost | Persistencia con volumen y healthcheck |
-| backend | Python 3.12 slim; parche/digest pendiente | 8000 → 8000 localhost | FastAPI y migraciones antes de servir |
-| frontend | Node 22; parche/digest pendiente | 5173 → 5173 localhost | Vite con proxy /api hacia backend |
+| backend | Python 3.12.3 objetivo; imagen slim/digest pendiente | 8000 → 8000 localhost | FastAPI y migraciones antes de servir |
+| frontend | Node 22.23.2 objetivo; imagen/digest pendiente | 5173 → 5173 localhost | Vite con proxy /api hacia backend |
 | mailpit | Mailpit, tag pendiente V-01 | 8025 → 8025 localhost; SMTP 1025 solo red interna | Bandeja de recuperación dev |
 
 ```mermaid

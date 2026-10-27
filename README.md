@@ -2,7 +2,7 @@
 
 El conocimiento crece cuando se comparte. Webapp comunitaria para descubrir cursos gratuitos y construir un recorrido de aprendizaje personal.
 
-**Estado:** Instancia A — documentación en revisión. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
+*Estado:* Instancia A — documentación en revisión. La aprobación docente no está registrada. No hay aplicación implementada ni comandos de instalación ejecutables del proyecto.
 
 SaberColectivo ofrece un catálogo público de cursos aportados por usuarios y revisados por un administrador designado. Cada usuario tiene un roadmap privado con orden manual y estados pendiente, en curso y completado. Administradores pueden aprobar sus aportes con trazabilidad, corregir metadatos, retirar cursos con motivo y republicarlos tras verificar solución; los roadmaps existentes conservan los cursos retirados con una advertencia. Se admite certificado opcional pago del proveedor; el contenido completo debe ser gratuito y no una prueba temporal.
 
@@ -29,7 +29,7 @@ Fuera del MVP: pagos, reseñas, valoraciones, comentarios, chat, recomendaciones
 
 ## Stack y ejecución
 
-Stack exigido: React 19 + Vite + pnpm; FastAPI + uv; PostgreSQL 18.6; Docker + Compose. Versiones realmente detectadas y pendientes de resolución en TRD §1. Las instrucciones `docker compose up --build` del plan son criterios para B: no hay Compose ni aplicación hoy. No inicializar dependencias ni implementar antes de confirmación explícita de aprobación docente.
+Stack exigido: React 19 + Vite + pnpm; FastAPI + uv; PostgreSQL 18.6; Docker + Compose. Entorno confirmado: Node 22.23.2, pnpm global 12.15.0, Python 3.12.3, uv 0.12.21, Docker 29.1.3 y Compose 2.40.3. Objetivos sin instalar: React 19.3.1, Vite 8.3.5, FastAPI 0.162.0 y PostgreSQL 18.6. Evidencia y pendientes en TRD §1. Las instrucciones `docker compose up --build` del plan son criterios para B: no hay Compose ni aplicación hoy. No inicializar dependencias ni implementar antes de confirmación explícita de aprobación docente.
 
 ## Cómo revisar
 

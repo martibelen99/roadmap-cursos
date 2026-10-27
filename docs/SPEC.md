@@ -41,14 +41,17 @@ Reglas completas: [PRD §7](PRD.md#7-reglas-de-negocio).
 
 ## 6. Stack registrado (versiones exactas con las que se va a desarrollar)
 
-| Capa | Tecnología | Versión y evidencia |
-|---|---|---|
-| Frontend | React + Vite + pnpm | React 19 exigido; versiones exactas del proyecto pendientes de instalación autorizada en Instancia B. No hay frontend. |
-| Backend | FastAPI + uv | FastAPI stable exigido (referencia de consigna: 0.158.2). Sin backend instalado; uv detectado, ejecución bloqueada por confinamiento de Snap. |
-| Base de datos | PostgreSQL | 18.6 fijada por consigna; no se ha creado ni verificado un contenedor del proyecto. |
-| Infra dev | Docker + Compose | Herramientas del host registradas en TRD §1; no equivalen a un entorno del proyecto validado. |
+| Capa / herramienta | Instalado y verificado | Objetivo exacto | Pendiente |
+|---|---|---|---|
+| Frontend | Node 22.23.2; pnpm **12.15.0** global; npm auxiliar 10.9.8 | React **19.3.1**, Vite **8.3.5**, pnpm **12.15.0** | React/Vite no instalados; instalación y build en B tras aprobación |
+| Backend | Python **3.12.3**; uv **0.12.21**, ejecución confirmada | FastAPI **0.162.0** | Instalar/resolver dependencias y verificar en B; 0.158.2 es referencia original, no versión instalada |
+| Base de datos | Manifiesto remoto disponible para linux/amd64; sin instancia del proyecto | PostgreSQL **18.6** | Descargar y ejecutar/verificar en B, no durante A |
+| Infra dev | Docker cliente/servidor **29.1.3**; Compose **2.40.3+ds1-0ubuntu1~24.04.1** | Host actual como base; PostgreSQL 18.6 obligatorio | Cotejar stable y tags/digests antes de B; no se ejecutó Compose ni se descargaron imágenes |
+| Control de versiones / SO | Git **2.43.0**; Ubuntu **24.04.2 LTS**, x86_64 | Entorno local registrado | Sin cambio de SO ni herramientas adicionales |
 
-Pendiente obligatorio V-01: registrar versiones exactas resueltas y su compatibilidad antes de cerrar la entrega; no instalar durante esta instancia sin resolver la contradicción con la prohibición de inicializar la aplicación.
+Node 22.23.2 satisface engines de pnpm 12.15.0 (>=18) y Vite 8.3.5 (^20.19.0 o >=22.12.0), según metadatos consultados el 27/10/2026. Es compatibilidad declarada, no prueba de la aplicación. Inventario definitivo del host, comandos, fuentes y distinción instalado/objetivo/pendiente: [TRD §1](TRD.md#1-stack-y-versiones-exactas).
+
+**V-01:** React, FastAPI y PostgreSQL —y Vite como dependencia frontend— se instalarán y verificarán durante la Instancia B, solo después de aprobación docente confirmada por el usuario. La preparación de A solo instaló pnpm global fuera del repositorio. El requisito de versiones exactas instaladas de la aplicación sigue pendiente de esa ejecución; no se rellena con versiones objetivo como si ya fueran instalaciones reales.
 
 ## 7. Restricciones técnicas heredadas de la SPEC de clase
 
@@ -86,3 +89,4 @@ D-01 a D-11 fueron confirmadas expresamente por el autor el 27/10/2026. Las deci
 | 27/10/2026 | Se verificó el commit original 2128507 | Preservar la consigna y trazabilidad. |
 | 27/10/2026 | Refinamiento con D-01 a D-08, restricciones y pendientes | Incorporar SaberColectivo, diez categorías y alcance confirmado, sin inventar respuestas. |
 | 27/10/2026 | Incorporadas D-09 a D-11: duplicados y gestión administrativa | Cerrar decisiones operativas confirmadas por el autor. |
+| 27/10/2026 | Inventario real y pnpm global 12.15.0; objetivos React 19.3.1, Vite 8.3.5 y FastAPI 0.162.0 | Preparar entorno sin inicializar aplicación; instalaciones del proyecto y verificación quedan para B aprobada. |
