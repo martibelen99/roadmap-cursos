@@ -1,10 +1,10 @@
-# SPEC — Comunidad de cursos
+# SPEC — SaberColectivo
 
-Estado: Instancia A, versión refinada del 27/10/2026. Nombre descriptivo provisional; ver Q-01 en PRD §10. La SPEC original permanece intacta en el commit `2128507` (`git show 2128507:docs/SPEC.md`). No se reescribió el historial.
+Estado: Instancia A, versión refinada del 27/10/2026. Nombre definitivo confirmado por el autor; identidad: el conocimiento crece cuando se comparte. La SPEC original permanece intacta en el commit `2128507` (`git show 2128507:docs/SPEC.md`). No se reescribió el historial.
 
 ## 1. Identidad del producto
 
-- **Nombre propio:** pendiente de elección del autor (Q-01); «Comunidad de cursos» identifica provisionalmente los documentos.
+- **Nombre propio:** SaberColectivo. Su identidad se basa en que el conocimiento crece cuando se comparte.
 - **Una línea:** una comunidad de estudiantes descubre cursos gratuitos validados y organiza su aprendizaje en un roadmap personal privado.
 
 ## 2. Problema
@@ -25,7 +25,7 @@ Catálogo público con búsqueda, filtro de categoría y paginación; registro, 
 
 ### Fuera (out of scope explícito)
 
-No se admite contenido completo pago ni pruebas gratuitas temporales (decisión confirmada). La lista adicional propuesta —pagos dentro de la app, reseñas, comentarios, chat, recomendaciones automáticas, emisión de certificados y correos ajenos a recuperación— espera confirmación en Q-03 del PRD. No se implementa ninguna de esas extensiones mientras esté pendiente. La Instancia A no incluye código de aplicación ni inicialización de dependencias.
+No se admite contenido completo pago ni pruebas gratuitas temporales. Se excluyen pagos dentro de la app, reseñas, valoraciones, comentarios, chat, recomendaciones automáticas, certificados propios y correos ajenos a recuperación (confirmado por el autor). Los certificados del proveedor sí se identifican. La Instancia A no incluye código de aplicación ni inicialización de dependencias.
 
 ## 5. Reglas de producto clave
 
@@ -71,7 +71,7 @@ Pendiente obligatorio V-01: registrar versiones exactas resueltas y su compatibi
 | D-04 | Qué pasa tras rechazo | Definitivo / corregir y reenviar / edita administrador | Motivo obligatorio y reenvío por autor | PRD BR-004 |
 | D-05 | Qué significa gratuito | Todo gratis / contenido gratis con certificado pago / pruebas temporales | Contenido completo gratis, certificado pago opcional, sin pruebas | PRD BR-005 |
 | T-01 | Búsqueda y duplicados | Solo categoría / texto y categoría; URL exacta / normalizada | Texto y categoría; unicidad por URL normalizada | Decisión técnica de diseño, TRD y BackendSchema |
-| Q-01–03 | Nombre, categorías iniciales y exclusiones adicionales | Opciones enviadas al autor | Pendientes, no aprobadas por silencio | PRD §10 |
+| D-06–08 | Nombre, categorías y exclusiones | Nombre propuesto / elección propia; categorías amplias / solo tecnología; ampliar / acotar MVP | SaberColectivo; diez categorías amplias, una principal y sin subcategorías; exclusiones confirmadas | PRD §8–10 |
 
 D-01 a D-05 fueron confirmadas expresamente por el autor el 27/10/2026. Las decisiones técnicas se identifican como propias del diseño, nunca como requisitos docentes.
 

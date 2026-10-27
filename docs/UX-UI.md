@@ -1,6 +1,6 @@
-# UX-UI — Comunidad de cursos
+# UX-UI — SaberColectivo
 
-Guía de diseño, no interfaz implementada. Identidad definitiva pendiente Q-01. Fecha: 27/10/2026.
+Guía de diseño, no interfaz implementada. Identidad definitiva confirmada: el conocimiento crece cuando se comparte. Fecha: 27/10/2026.
 
 ## 1. Principios
 
@@ -44,7 +44,7 @@ Ratios calculados localmente con luminancia relativa sRGB (WCAG), no estimados n
 | warning | 7.20:1 | 6.83:1 |
 | error | 6.54:1 | 6.20:1 |
 
-Texto normal requiere ≥4.5:1; controles ≥3:1. Blanco sobre primary tiene el mismo ratio de la tabla contra surface. No usar warning claro ni grises decorativos para texto. El diseño de los bordes no depende del foco para ser perceptible.
+Texto normal requiere ≥4.5:1; controles ≥3:1. Blanco sobre primary tiene el mismo ratio de la tabla contra surface. Primary solo se usa como texto sobre surface blanco (4.51:1). Sobre background gris usar primary-active #174ea6; primary sobre gris da 4.27:1 y no cumple AA para texto normal. No usar warning claro ni grises decorativos para texto. El diseño de los bordes no depende del foco para ser perceptible.
 
 ### 2.2 Tipografía
 
@@ -195,4 +195,4 @@ Diseñada aquí; pendiente de prueba de implementación, no se marca como cumpli
 
 ## 7. Iconografía y assets
 
-SVG inline de Material Symbols, tamaño 24px en navegación y 20px en acciones, currentColor. Selección pequeña y local durante B: menu, close, search, check, warning, school, arrow_upward y arrow_downward. Sin biblioteca ni fuente descargada en A. Mantener licencia y atribución correspondientes al incorporar los assets. No se requieren fotografías ni imágenes generadas; nombre textual provisional evita inventar una marca antes de Q-01.
+SVG inline de Material Symbols, tamaño 24px en navegación y 20px en acciones, currentColor. Selección pequeña y local durante B: menu, close, search, check, warning, school, arrow_upward y arrow_downward. Sin biblioteca ni fuente descargada en A. Mantener licencia y atribución correspondientes al incorporar los assets. No se requieren fotografías ni imágenes generadas; nombre textual SaberColectivo identifica el producto sin requerir un logo gráfico.

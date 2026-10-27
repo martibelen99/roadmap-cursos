@@ -1,4 +1,4 @@
-# TRD — Comunidad de cursos
+# TRD — SaberColectivo
 
 Diseño para Instancia B. No se ha instalado ni generado la aplicación. Fecha: 27/10/2026.
 

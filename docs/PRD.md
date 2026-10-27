@@ -1,6 +1,6 @@
-# PRD — Comunidad de cursos
+# PRD — SaberColectivo
 
-Estado: requisitos redactados; cierre de identidad, categorías y exclusiones pendiente en §10. Fecha: 27/10/2026.
+Estado: requisitos redactados con identidad, categorías y exclusiones confirmadas; decisiones operativas adicionales pendientes en §10. Fecha: 27/10/2026.
 
 ## 1. Resumen ejecutivo
 
@@ -68,7 +68,7 @@ P0 significa obligatorio para el MVP. Todos los criterios siguientes deben aprob
 | RF-005 | Cola de revisión exclusiva del administrador; aprobar/rechazar con registro de actor, fecha y motivo. | US-005 |
 | RF-006 | Mis aportes paginados, detalle propio, corrección y reenvío de rechazados. | US-004, US-006 |
 | RF-007 | Un roadmap privado con alta, baja, orden manual y estado por curso; listado paginado. | US-007 |
-| RF-008 | Categorías seleccionables desde lista administrada mediante datos iniciales; no texto libre. Lista inicial pendiente Q-02. | US-001, US-004 |
+| RF-008 | Categorías seleccionables desde lista administrada mediante datos iniciales; no texto libre. Diez categorías iniciales confirmadas, ampliables sin cambio arquitectónico y sin subcategorías en MVP; lista en §9. | US-001, US-004 |
 
 ## 6. Requisitos no funcionales
 
@@ -93,27 +93,33 @@ P0 significa obligatorio para el MVP. Todos los criterios siguientes deben aprob
 | BR-004 | Rechazo con motivo obligatorio; autor puede corregir y reenviar. | D-04 |
 | BR-005 | Contenido completo gratuito, certificado opcional pago permitido y pruebas temporales excluidas. | D-05 |
 | BR-006 | Catálogo y detalle publicados accesibles sin cuenta. | D-02 |
-| BR-007 | Un curso por URL normalizada, incluso mientras está en revisión; versiones en la misma URL se resuelven mediante corrección antes de publicar, no creando duplicados. | Decisión de diseño para evitar duplicados; no requisito docente. |
-| BR-008 | Solo el autor modifica su aporte rechazado; ni administrador ni autor editan un curso publicado en el MVP diseñado. | Diseño mínimo de permisos; extensiones sujetas a Q-03. |
+| BR-007 | Propuesta: un curso por URL normalizada, incluso en revisión. | Pendiente Q-04; no confirmada. |
+| BR-008 | Solo el autor modifica su aporte rechazado; gestión del publicado pendiente de decisión. | D-04; ampliación consultada en Q-06. |
 | BR-009 | Un curso solo puede estar una vez en el roadmap de cada usuario; retirar no elimina el curso comunitario. | Diseño derivado de D-03. |
-| BR-010 | Administrador mantiene capacidades de usuario; no aprueba su propio aporte (debe revisarlo otro administrador). | Diseño de integridad; requiere segunda cuenta administradora si el administrador aporta. |
+| BR-010 | Administrador mantiene capacidades de usuario; aprobación de aportes propios pendiente. | Q-05; no aplicar restricción por defecto sin respuesta. |
 
 ## 8. Fuera de alcance (out of scope)
 
 Confirmado: cursos de contenido pago y pruebas gratuitas temporales. No se aloja ni se reproduce contenido educativo; se enlaza al proveedor.
 
-Propuesto para Q-03: pagos dentro de la app, comentarios, reseñas, chat, recomendaciones automáticas, certificados propios y correos distintos de recuperación. No están comprometidos en el MVP. Tampoco se planifica app nativa ni múltiples roadmaps: la solución acordada es web con un roadmap por usuario.
+Confirmado: pagos dentro de la app, comentarios, reseñas, valoraciones, chat, recomendaciones automáticas, certificados propios y correos distintos de recuperación. Los certificados emitidos por proveedores se identifican; estas extensiones no forman parte del plan del MVP. Tampoco se planifica app nativa ni múltiples roadmaps: la solución acordada es web con un roadmap por usuario.
 
 ## 9. Supuestos y decisiones sobre la SPEC de clase
 
 [Registro de origen en SPEC §8](SPEC.md#8-vacíos-de-la-spec-de-clase-y-decisiones-tomadas). D-01–D-05 son respuestas del autor. Personas, búsqueda, unicidad de URL y permisos mínimos son decisiones de diseño documentadas. La validación de enlace es manual por administrador: no se promete crawler ni validación automática de gratuidad. Las métricas de §2 son objetivos de verificación, no datos observados.
 
+Categorías iniciales confirmadas: Tecnología y Programación; Negocios y Administración; Ciencias y Matemáticas; Idiomas; Arte y Diseño; Humanidades y Ciencias Sociales; Oficios y Formación Técnica; Comunicación y Marketing; Desarrollo Personal y Profesional; Salud y Bienestar. Cada curso tiene una categoría principal. Las categorías son datos ampliables, sin subcategorías en MVP.
+
 ## 10. Preguntas abiertas
 
 | ID | Pregunta | Impacto | Estado / recomendación |
 |---|---|---|---|
-| Q-01 | Nombre propio del producto | Identidad y títulos | Consultada; recomendación «Ruta Abierta»; título descriptivo temporal. |
-| Q-02 | Categorías iniciales | Seed y opciones del formulario | Consultada; propuesta amplia: Tecnología, Negocios, Ciencias, Idiomas, Arte y Humanidades, Oficios. No aprobada aún. |
-| Q-03 | Exclusiones adicionales del MVP | Alcance y estimaciones | Consultada; excluir extensiones enumeradas en §8. Sin confirmación no se incorporan ni se declaran rechazadas definitivamente. |
+| Q-01 | Nombre propio | Identidad | Resuelta: SaberColectivo, conocimiento que crece al compartirlo. |
+| Q-02 | Categorías iniciales | Seed y formulario | Resuelta: diez categorías de §9, una principal por curso, sin subcategorías. |
+| Q-03 | Exclusiones | Alcance | Resuelta: exclusiones de §8 confirmadas. |
+
+| Q-04 | Duplicados y ediciones con misma URL | Unicidad y edición | Consultada; recomendado un registro por URL normalizada. |
+| Q-05 | Administrador aprueba aporte propio | Permisos y operación | Consultada; recomendado permitir con trazabilidad en MVP individual. |
+| Q-06 | Corrección/retiro de publicados | Ciclo de vida, API y plan | Consultada; recomendada gestión mínima por administrador, conservando roadmap. |
 
 Versiones y aprobación docente son pendientes técnicos/de entrega, no decisiones de producto; seguimiento en auditoría.
